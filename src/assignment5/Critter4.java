@@ -60,4 +60,9 @@ public class Critter4 extends Critter {
 		/* Pick a new direction based on our genes */
 		dir =3+ Critter.getRandomInt(3);
 	}
+	@Override
+	public CritterShape viewShape() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
