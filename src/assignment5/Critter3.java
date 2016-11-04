@@ -1,6 +1,6 @@
 /* 
- * CRITTERS Critter3.java
- * EE422C Project 4 submission by
+ * CRITTERS GUI Critter3.java
+ * EE422C Project 5 submission by
  * Brent Atchison
  * bma862
  * 16455
