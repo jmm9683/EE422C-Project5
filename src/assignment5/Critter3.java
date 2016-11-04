@@ -69,4 +69,9 @@ public class Critter3 extends Critter {
 			dir = 7;
 		}
 	}
+	@Override
+	public CritterShape viewShape() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

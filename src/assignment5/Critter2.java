@@ -53,4 +53,9 @@ public class Critter2 extends Critter {
 		/* Update direction */
 		dir = Critter.getRandomInt(4) + 3;
 	}
+	@Override
+	public CritterShape viewShape() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
