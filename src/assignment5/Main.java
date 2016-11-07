@@ -20,8 +20,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.stage.Stage;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -34,6 +36,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -53,17 +56,18 @@ import java.util.*;
 public class Main extends Application {
 	final GridPane scene = new GridPane();
 	final GridPane world = new GridPane();
-	final VBox controls = new VBox(20);
-	ComboBox critterList = new ComboBox();
+	final VBox controls = new VBox(10);
 	final Label makeAmtLabel = new Label("Number of Critters");
 	final Label multiplierLabel = new Label("Multiplier");
 	final GridPane makeAmtPane = new GridPane();
 	final Slider makeAmtSlider = new Slider(0, 100, 1);
 	final Slider makeAmtMult = new Slider(0, 10, 1);
 	final Label makeAmtVal = new Label(Integer.toString((int) makeAmtSlider.getValue()));
+	final Button makeButton = new Button();
+	
 	@Override
 	public void start(Stage primaryStage) throws ClassNotFoundException, URISyntaxException {
-		ArrayList<String> critters = listOfCritters();
+		
 		/* Scene configuration */
 		scene.setHgap(10);
 		scene.setVgap(10);
@@ -72,15 +76,19 @@ public class Main extends Application {
 		/* Set scene columns */
 	    ColumnConstraints sceneCol1 = new ColumnConstraints();
 	    sceneCol1.setPercentWidth(75);
+	    sceneCol1.setHalignment(HPos.CENTER);
 	    ColumnConstraints sceneCol2 = new ColumnConstraints();
 	    sceneCol2.setPercentWidth(25);
+	    sceneCol2.setHalignment(HPos.CENTER);
 	    scene.getColumnConstraints().addAll(sceneCol1, sceneCol2);
 	    
 	    /* Set scene rows */
 	    RowConstraints sceneRow1 = new RowConstraints();
 	    sceneRow1.setPercentHeight(75);
+	    sceneRow1.setValignment(VPos.CENTER);
 	    RowConstraints sceneRow2 = new RowConstraints();
 	    sceneRow2.setPercentHeight(25);
+	    sceneRow2.setValignment(VPos.CENTER);
 	    scene.getRowConstraints().addAll(sceneRow1, sceneRow2);
 		
 		/* World setup */
@@ -96,15 +104,16 @@ public class Main extends Application {
         	world.getRowConstraints().add(rowConst);
         }
         
-        /* Set make Amount Pane Spacing */
-		makeAmtPane.setHgap(10);
-		makeAmtPane.setVgap(0);
+        /* Make button settings */
+        makeButton.setText("Make");
         
         /* Set make amount columns */
 	    ColumnConstraints makeAmtCol1 = new ColumnConstraints();
-	    makeAmtCol1.setPercentWidth(80);
+	    makeAmtCol1.setPercentWidth(75);
+	    makeAmtCol1.setHalignment(HPos.CENTER);
 	    ColumnConstraints makeAmtCol2 = new ColumnConstraints();
-	    makeAmtCol2.setPercentWidth(20);
+	    makeAmtCol2.setPercentWidth(25);
+	    makeAmtCol2.setHalignment(HPos.CENTER);
 	    makeAmtPane.getColumnConstraints().addAll(makeAmtCol1, makeAmtCol2);
 	    
 	    /* Set make amount rows */
@@ -123,10 +132,11 @@ public class Main extends Application {
 	    makeAmtPane.add(multiplierLabel, 0, 2);
 	    makeAmtPane.add(makeAmtMult, 0, 3);
 	    makeAmtPane.add(makeAmtVal, 1, 1);
+	    makeAmtPane.add(makeButton, 1, 2);
 	    
-	    //ObservableList<String> oList = FXCollections.observableArrayList(listOfCritters());
-	    //critterList = new ComboBox(oList);
-	    //System.out.println(listOfCritters());
+	    ObservableList<String> oList = FXCollections.observableArrayList(listOfCritters());
+	    final ComboBox<String> critterList = new ComboBox<String>(oList);
+	    //critterList.getSelectionModel().setSelectedIndex(0);
         
         /* Controls setup */
         controls.getChildren().addAll(critterList, makeAmtPane);
@@ -134,7 +144,7 @@ public class Main extends Application {
         /* Make amount slider setup */
 		makeAmtSlider.setShowTickMarks(true);
 		makeAmtSlider.setShowTickLabels(true);
-		makeAmtSlider.setMajorTickUnit(10);
+		makeAmtSlider.setMajorTickUnit(25);
 		makeAmtSlider.setPrefWidth(1000);
 		makeAmtSlider.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
@@ -145,6 +155,7 @@ public class Main extends Application {
 		/* Make amount multiplier setup */
 		makeAmtMult.setShowTickMarks(true);
 		makeAmtMult.setShowTickLabels(true);
+		makeAmtMult.setSnapToTicks(true);
 		makeAmtMult.setMajorTickUnit(5);
 		makeAmtMult.setPrefWidth(1000);
 		makeAmtMult.valueProperty().addListener(new ChangeListener<Number>() {
