@@ -26,6 +26,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.stage.Stage;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -104,10 +105,10 @@ public class Main extends Application {
 		worldConfig();
 		
 		world.add(circle, 0, 0);
-		world.add(square, 1, 0);
-		world.add(triangle, 2, 0);
-		world.add(diamond, 3, 0);
-		world.add(star, 4, 0);
+		//world.add(square, 1, 0);
+		//world.add(triangle, 2, 0);
+		//world.add(diamond, 3, 0);
+		//world.add(star, 4, 0);
         
         /* Button setup */
         makeButton.setText("Make");
@@ -132,6 +133,15 @@ public class Main extends Application {
 		/* Add everything to scene */
 	    scene.add(world, 0, 0);
 	    scene.add(controls, 1, 0);
+	    
+	    scene.getChildren().clear();
+	    worldClear();
+	    
+		//world.getChildren().clear();
+	    world.add(square, 1, 1);
+	    scene.add(world, 0, 0);
+	    scene.add(controls, 1, 0);
+	    
 		
         primaryStage.setScene(new Scene(scene, screenSize.getWidth(), screenSize.getHeight()));
 	    primaryStage.show();
@@ -170,7 +180,6 @@ public class Main extends Application {
 	}
 	
 	public static void worldConfig() {
-		world.getChildren().clear();
 		world.setGridLinesVisible(true);
         for (int i = 0; i < Params.world_width; i++) {
         	ColumnConstraints colConst = new ColumnConstraints();
@@ -184,6 +193,12 @@ public class Main extends Application {
         	rowConst.setValignment(VPos.CENTER);
         	world.getRowConstraints().add(rowConst);
         }
+	}
+	
+	public static void worldClear() {
+		Node node = world.getChildren().get(0);
+		world.getChildren().clear();
+		world.getChildren().add(0,node);
 	}
 	
 	public static void makeAmtConfig() {
@@ -291,22 +306,24 @@ public class Main extends Application {
 	}
 	
 	public static void shapeConfig() {
-
 		circle.setRadius(200.0 / Params.world_width);
+		double scaleFactor = (screenSize.getHeight() * 0.75) / Params.world_height;
+		System.out.println(scaleFactor);
+		circle.setRadius(scaleFactor / 6);
 		square.getPoints().addAll(
 				0.0, 0.0,
-				400.0 / Params.world_width, 0.0,
-				400.0 / Params.world_width, 400.0 / Params.world_width,
-				0.0, 400.0 / Params.world_width);
+				12.0, 0.0,
+				12.0, 12.0,
+				0.0, 12.0);
 		triangle.getPoints().addAll(
-				200.0 / Params.world_width, 0.0,
-				0.0, 400.0 / Params.world_width,
-				400.0 / Params.world_width, 400.0 / Params.world_width);
+				6.0, 0.0,
+				0.0, 12.0,
+				12.0, 12.0);
 		diamond.getPoints().addAll(
-				200.0 / Params.world_width, 0.0,
-				400.0 / Params.world_width, 200.0 / Params.world_width,
-				200.0 / Params.world_width, 400.0 / Params.world_width,
-				0.0, 200.0 / Params.world_width);
+				6.0, 0.0,
+				12.0, 6.0,
+				6.0, 12.0,
+				0.0, 6.0);
 		star.getPoints().addAll(
 				6.0, 0.0,
 				7.5, 3.0,
@@ -318,11 +335,6 @@ public class Main extends Application {
 				3.0, 6.0,
 				0.0, 3.0,
 				4.5, 3.0);
-
-		triangle.getPoints().addAll(5.0, 0.0, 1.0, 5.0, 9.0, 5.0);
-		square.getPoints().addAll(0.0, 0.0, 5.0, 0.0, 5.0, 5.0, 0.0, 5.0);
-		
-
 	}
 	
 	private  ArrayList<String> listOfCritters ()throws URISyntaxException, ClassNotFoundException{
