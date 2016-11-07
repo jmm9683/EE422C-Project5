@@ -221,23 +221,6 @@ public class Main extends Application {
 		         
 		    }});
         
-<<<<<<< HEAD
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-=======
-        /* Statistics setup */
->>>>>>> a0702f19db0064089e51cf600c513ae3dea8e396
         statsContainer.setAlignment(Pos.CENTER);
         statsContainer.setSpacing(10);
         statsContainer.setPadding(new Insets(20, 0, 0, 0));
@@ -270,7 +253,7 @@ public class Main extends Application {
         });
         
         /* Controls setup */
-        controls.getChildren().addAll(critterList, makeAmtPane, stepPane, statsContainer);
+        controls.getChildren().addAll(critterList, makeAmtPane, stepPane, statsContainer, seedPane);
 	    
 		/* Add everything to scene */
 	    scene.add(world, 0, 0);
@@ -569,25 +552,19 @@ public class Main extends Application {
 	    seedRow2.setValignment(VPos.CENTER);
 	    seedPane.getRowConstraints().addAll(seedRow1, seedRow2);
 	    
-	    /* Animation slider setup */
-		aniSlider.setShowTickMarks(true);
-		aniSlider.setShowTickLabels(true);
-		aniSlider.setMajorTickUnit(25);
-		aniSlider.setPrefWidth(1000);
-		aniSlider.valueProperty().addListener(new ChangeListener<Number>() {
-            public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-            	aniSlider.setValue(new_val.intValue());
-            	if (new_val.intValue() < 1) { aniButton.setDisable(true); }
-            	else { aniButton.setDisable(false); }
-                aniVal.setText(String.valueOf(new_val.intValue())); }
-        });
+	    seedButton.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override
+		    public void handle(ActionEvent e) {
+				try { Critter.setSeed(Long.parseLong(seed.getText())); }
+				catch (NumberFormatException e1) { System.out.println("Not a number"); } 
+		    }
+	    });
+	    
+	    seedPane.setAlignment(Pos.CENTER);
 		
-		aniPane.setPadding(new Insets(0, 0, 10, 0));
-		
-		aniPane.add(aniLabel, 0, 0);
-		aniPane.add(aniSlider, 0, 1);
-		aniPane.add(aniVal, 1, 1);
-		aniPane.add(aniButton, 2, 1);
+		seedPane.add(seedLabel, 0, 0);
+		seedPane.add(seed, 0, 1);
+		seedPane.add(seedButton, 1, 1);
 	}
 	
 	private  ArrayList<String> listOfCritters ()throws URISyntaxException, ClassNotFoundException{
