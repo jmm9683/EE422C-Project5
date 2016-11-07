@@ -91,6 +91,9 @@ public class Main extends Application {
 	static Polygon diamond = new Polygon();
 	static Polygon star = new Polygon();
 	
+	/* Window size */
+	static double winWidth = screenSize.getWidth();
+	static double winHeight = screenSize.getHeight();
 	
 	@Override
 	public void start(Stage primaryStage) throws ClassNotFoundException, URISyntaxException {
@@ -104,9 +107,11 @@ public class Main extends Application {
 		/* World setup */
 		worldConfig();
 		
+		screenListener();
+		
 		world.add(circle, 0, 0);
-		//world.add(square, 1, 0);
-		//world.add(triangle, 2, 0);
+		world.add(square, 1, 0);
+		world.add(triangle, 2, 0);
 		//world.add(diamond, 3, 0);
 		//world.add(star, 4, 0);
         
@@ -134,15 +139,6 @@ public class Main extends Application {
 	    scene.add(world, 0, 0);
 	    scene.add(controls, 1, 0);
 	    
-	    scene.getChildren().clear();
-	    worldClear();
-	    
-		//world.getChildren().clear();
-	    world.add(square, 1, 1);
-	    scene.add(world, 0, 0);
-	    scene.add(controls, 1, 0);
-	    
-		
         primaryStage.setScene(new Scene(scene, screenSize.getWidth(), screenSize.getHeight()));
 	    primaryStage.show();
         
@@ -305,20 +301,35 @@ public class Main extends Application {
 		stepPane.add(stepButton, 1, 2);
 	}
 	
+	public static void screenListener() {
+		scene.widthProperty().addListener(new ChangeListener<Number>() {
+		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
+		        winWidth = newSceneWidth.doubleValue();
+		    }
+		});
+		scene.heightProperty().addListener(new ChangeListener<Number>() {
+		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
+		        winHeight = newSceneHeight.doubleValue();
+		        shapeConfig();
+		    }
+		});
+	}
+	
 	public static void shapeConfig() {
-		circle.setRadius(200.0 / Params.world_width);
-		double scaleFactor = (screenSize.getHeight() * 0.75) / Params.world_height;
+		double scaleFactor = (winHeight * 0.75) / Params.world_height;
 		System.out.println(scaleFactor);
-		circle.setRadius(scaleFactor / 6);
+		circle.setRadius(scaleFactor / 6.0);
+		square.getPoints().clear();
 		square.getPoints().addAll(
 				0.0, 0.0,
-				12.0, 0.0,
-				12.0, 12.0,
-				0.0, 12.0);
+				scaleFactor / 3.0, 0.0,
+				scaleFactor / 3.0, scaleFactor / 3.0,
+				0.0, scaleFactor / 3.0);
+		triangle.getPoints().clear();
 		triangle.getPoints().addAll(
-				6.0, 0.0,
-				0.0, 12.0,
-				12.0, 12.0);
+				scaleFactor / 6.0, 0.0,
+				0.0, scaleFactor / 3.0,
+				scaleFactor / 3.0, scaleFactor / 3.0);
 		diamond.getPoints().addAll(
 				6.0, 0.0,
 				12.0, 6.0,
