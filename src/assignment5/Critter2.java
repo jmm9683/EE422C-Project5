@@ -57,7 +57,9 @@ public class Critter2 extends Critter {
 	}
 	@Override
 
-	public CritterShape viewShape() { return CritterShape.CIRCLE;}
+	public CritterShape viewShape() { return CritterShape.STAR;}
 	@Override
-	public javafx.scene.paint.Color viewFillColor() { return javafx.scene.paint.Color.MAGENTA; }
+	public javafx.scene.paint.Color viewFillColor() { return javafx.scene.paint.Color.BLANCHEDALMOND; }
+	@Override
+	public javafx.scene.paint.Color viewOutlineColor() { return javafx.scene.paint.Color.CYAN; }
 }

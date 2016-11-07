@@ -94,7 +94,8 @@ public class Main extends Application {
 	static ToggleButton aniButton = new ToggleButton("Animate");
 	
 	/* Run statistics */
-	static Button statsButton = new Button();
+	static HBox statsContainer = new HBox();
+	static Button statsButton = new Button("Run Stats");
 	
 	/* Shapes */
 	static Circle circle = new Circle();
@@ -178,8 +179,13 @@ public class Main extends Application {
 		         else { stepButton.setDisable(false); }
 		         
 		    }});
+        
+        statsContainer.setAlignment(Pos.CENTER);
+        statsContainer.setPadding(new Insets(20, 0, 0, 0));
+        statsContainer.getChildren().add(statsButton);
+        
         /* Controls setup */
-        controls.getChildren().addAll(critterList, makeAmtPane, stepPane);
+        controls.getChildren().addAll(critterList, makeAmtPane, stepPane, statsContainer);
 	    
 		/* Add everything to scene */
 	    scene.add(world, 0, 0);
@@ -269,6 +275,9 @@ public class Main extends Application {
 	    makeAmtRow4.setPercentHeight(50);
 	    makeAmtPane.getRowConstraints().addAll(makeAmtRow1, makeAmtRow2, makeAmtRow3, makeAmtRow4);
 		
+	    /* Initialize to disabled */
+	    makeButton.setDisable(true);
+	    
 		/* Make amount slider setup */
 		makeAmtSlider.setShowTickMarks(true);
 		makeAmtSlider.setShowTickLabels(true);
@@ -277,6 +286,8 @@ public class Main extends Application {
 		makeAmtSlider.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
             	makeAmtSlider.setValue(new_val.intValue());
+            	if ((int) makeAmtMult.getValue() * new_val.intValue() < 1) { makeButton.setDisable(true); }
+            	else { makeButton.setDisable(false); }
                 makeAmtVal.setText(String.valueOf((int)((int) makeAmtMult.getValue() * new_val.intValue()))); }
         });
 		
@@ -288,6 +299,8 @@ public class Main extends Application {
 		makeAmtMult.setPrefWidth(1000);
 		makeAmtMult.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+            	if ((int) makeAmtSlider.getValue() * new_val.intValue() < 1) { makeButton.setDisable(true); }
+            	else { makeButton.setDisable(false); }
                 makeAmtVal.setText(String.valueOf((int)((int) makeAmtSlider.getValue() * new_val.intValue()))); }
         });
         
@@ -399,19 +412,21 @@ public class Main extends Application {
 		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
 		        winWidth = newSceneWidth.doubleValue();
 		        shapeConfig();
+		        updatecanvas();
 		    }
 		});
 		scene.heightProperty().addListener(new ChangeListener<Number>() {
 		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
 		        winHeight = newSceneHeight.doubleValue();
 		        shapeConfig();
+		        updatecanvas();
 		    }
 		});
 	}
 	
 	public static void shapeConfig() {
 		double factor1 = (winHeight * 0.6) / Params.world_height;
-		double factor2 = (winWidth * 0.6) / Params.world_width;
+		double factor2 = (winWidth * 0.3) / Params.world_width;
 		double scaleFactor = 0;
 		if (factor1 < factor2) { scaleFactor = factor1; }
 		else { scaleFactor = factor2; }
@@ -479,6 +494,9 @@ public class Main extends Application {
 				if(b ==CritterShape.CIRCLE){
 					Circle circ = new Circle();
 					circ.setRadius(circle.getRadius());
+					circ.setFill(ls.viewFillColor());
+					circ.setStroke(ls.viewOutlineColor());
+					world.add(circ, oldx, oldy);
 				}
 				
 				else{
@@ -501,7 +519,7 @@ public class Main extends Application {
 					poly.getPoints().addAll(triangle.getPoints());
 				}
 				
-				scene.add(poly, oldx, oldy);
+				world.add(poly, oldx, oldy);
 				}
 				
 				// Circle circ = new Circle();
