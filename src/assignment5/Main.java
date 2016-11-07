@@ -43,6 +43,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.io.File;
 import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
@@ -111,7 +113,8 @@ public class Main extends Application {
 	    scene.add(world, 0, 0);
 	    scene.add(controls, 1, 0);
 		
-        primaryStage.setScene(new Scene(scene, 800, 600));
+	    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        primaryStage.setScene(new Scene(scene, screenSize.getWidth(), screenSize.getHeight()));
 	    primaryStage.show();
         
 	}
@@ -211,7 +214,9 @@ public class Main extends Application {
 	
 	public static void shapeConfig() {
 		triangle.getPoints().addAll(5.0, 0.0, 1.0, 5.0, 9.0, 5.0);
+		triangle.setFill(Color.BLUE);
 		square.getPoints().addAll(0.0, 0.0, 5.0, 0.0, 5.0, 5.0, 0.0, 5.0);
+		square.setFill(Color.RED);
 	}
 	
 	private  ArrayList<String> listOfCritters ()throws URISyntaxException, ClassNotFoundException{
