@@ -289,6 +289,10 @@ public abstract class Critter {
 	 */
 	public static List<Critter> getInstances(String critter_class_name) throws InvalidCritterException {
 		
+		if (critter_class_name.equals("Crittersgetter")){
+			return population;
+		}
+		
 		/* Initialize new critter */
 		Class<?> critter = null;
 		

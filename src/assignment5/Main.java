@@ -58,6 +58,7 @@ import java.util.*;
  */
 public class Main extends Application {
 	static GridPane world = new GridPane();
+	
 	static GridPane scene = new GridPane();
 	static VBox controls = new VBox(10);
 	static Label makeAmtLabel = new Label("Number of Critters");
@@ -71,6 +72,7 @@ public class Main extends Application {
 	/* Shapes */
 	static Polygon triangle = new Polygon();
 	static Polygon square = new Polygon();
+	
 	
 	@Override
 	public void start(Stage primaryStage) throws ClassNotFoundException, URISyntaxException {
@@ -214,9 +216,7 @@ public class Main extends Application {
 	
 	public static void shapeConfig() {
 		triangle.getPoints().addAll(5.0, 0.0, 1.0, 5.0, 9.0, 5.0);
-		triangle.setFill(Color.BLUE);
 		square.getPoints().addAll(0.0, 0.0, 5.0, 0.0, 5.0, 5.0, 0.0, 5.0);
-		square.setFill(Color.RED);
 	}
 	
 	private  ArrayList<String> listOfCritters ()throws URISyntaxException, ClassNotFoundException{
@@ -237,4 +237,20 @@ public class Main extends Application {
 		}
 		return allcrits;
 }
+	public static void updatecanvas(){
+		worldConfig();
+		String a = "Crittersgetter";
+		try {
+			List<Critter> chkpop = Critter.getInstances(a);
+		} catch (InvalidCritterException e) {
+
+			e.printStackTrace();
+		}
+		
+		
+		
+		
+	}
+	
+	
 }
