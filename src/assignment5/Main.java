@@ -46,6 +46,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 
 import java.awt.Dimension;
@@ -107,6 +108,23 @@ public class Main extends Application {
 	static TextArea stats = new TextArea();
 	static PrintStream ps;
 	
+	/* Seed */
+	static Label seedLabel = new Label("Seed");
+	static GridPane seedPane = new GridPane();
+	static Button seedButton = new Button("Set Seed");
+	static TextField seed = new TextField() {
+		@Override public void replaceText(int start, int end, String text) {
+	        if (text.matches("[0-9]*")) {
+	        	super.replaceText(start, end, text);
+	        }
+	    }
+	    @Override public void replaceSelection(String text) {
+	        if (text.matches("[0-9]*")) {
+	        	super.replaceSelection(text);
+	        }
+	    }
+	};
+	
 	/* Shapes */
 	static Circle circle = new Circle();
 	static Polygon square = new Polygon();
@@ -134,6 +152,8 @@ public class Main extends Application {
 		
 		/* Animation setup */
 		aniConfig();
+		
+		seedConfig();
 		
 		/* Listen for screen resize */
 		screenListener();
@@ -503,6 +523,47 @@ public class Main extends Application {
 				scaleFactor / 4.0, scaleFactor / 2.0,
 				0.0, scaleFactor / 4.0,
 				scaleFactor / 2.67, scaleFactor / 4.0);
+	}
+	
+	private static void seedConfig() {
+		
+		/* Set seed columns */
+	    ColumnConstraints seedCol1 = new ColumnConstraints();
+	    seedCol1.setPercentWidth(60);
+	    seedCol1.setHalignment(HPos.CENTER);
+	    ColumnConstraints seedCol2 = new ColumnConstraints();
+	    seedCol2.setPercentWidth(20);
+	    seedCol2.setHalignment(HPos.CENTER);
+	    seedPane.getColumnConstraints().addAll(seedCol1, seedCol2);
+
+	    /* Set seed rows */
+	    RowConstraints seedRow1 = new RowConstraints();
+	    seedRow1.setPercentHeight(50);
+	    seedRow1.setValignment(VPos.BOTTOM);
+	    RowConstraints seedRow2 = new RowConstraints();
+	    seedRow2.setPercentHeight(50);
+	    seedRow2.setValignment(VPos.CENTER);
+	    seedPane.getRowConstraints().addAll(seedRow1, seedRow2);
+	    
+	    /* Animation slider setup */
+		aniSlider.setShowTickMarks(true);
+		aniSlider.setShowTickLabels(true);
+		aniSlider.setMajorTickUnit(25);
+		aniSlider.setPrefWidth(1000);
+		aniSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+            	aniSlider.setValue(new_val.intValue());
+            	if (new_val.intValue() < 1) { aniButton.setDisable(true); }
+            	else { aniButton.setDisable(false); }
+                aniVal.setText(String.valueOf(new_val.intValue())); }
+        });
+		
+		aniPane.setPadding(new Insets(0, 0, 10, 0));
+		
+		aniPane.add(aniLabel, 0, 0);
+		aniPane.add(aniSlider, 0, 1);
+		aniPane.add(aniVal, 1, 1);
+		aniPane.add(aniButton, 2, 1);
 	}
 	
 	private  ArrayList<String> listOfCritters ()throws URISyntaxException, ClassNotFoundException{
