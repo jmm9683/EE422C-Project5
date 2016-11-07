@@ -15,6 +15,7 @@ package assignment5; // cannot be in default package
 
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -47,6 +48,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 
 import java.awt.Dimension;
@@ -110,6 +112,27 @@ public class Main extends Application {
 	static TextArea stats = new TextArea();
 	static PrintStream ps;
 	
+	/* Seed */
+	static Label seedLabel = new Label("Seed");
+	static GridPane seedPane = new GridPane();
+	static Button seedButton = new Button("Set Seed");
+	static TextField seed = new TextField() {
+		@Override public void replaceText(int start, int end, String text) {
+	        if (text.matches("[0-9]*")) {
+	        	super.replaceText(start, end, text);
+	        }
+	    }
+	    @Override public void replaceSelection(String text) {
+	        if (text.matches("[0-9]*")) {
+	        	super.replaceSelection(text);
+	        }
+	    }
+	};
+	
+	/* Exit */
+	static VBox exitBox = new VBox();
+	static Button exitButton = new Button("End Program");
+	
 	/* Shapes */
 	static Circle circle = new Circle();
 	static Polygon square = new Polygon();
@@ -137,6 +160,8 @@ public class Main extends Application {
 		
 		/* Animation setup */
 		aniConfig();
+		
+		seedConfig();
 		
 		/* Listen for screen resize */
 		screenListener();
@@ -204,7 +229,7 @@ public class Main extends Application {
 		         
 		    }});
         
-        
+
         
         
         aniButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -257,11 +282,22 @@ public class Main extends Application {
 		        System.setOut(ps);
 		        System.setErr(ps);
 		    	stats();
-		    	}
+	    	}
+        });
+        
+        exitBox.setAlignment(Pos.CENTER);
+        exitBox.setPadding(new Insets(20, 0, 0, 0));
+        exitBox.getChildren().add(exitButton);
+        
+        exitButton.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override
+		    public void handle(ActionEvent e) {
+		    	Platform.exit();
+	    	}
         });
         
         /* Controls setup */
-        controls.getChildren().addAll(critterList, makeAmtPane, stepPane, statsContainer);
+        controls.getChildren().addAll(critterList, makeAmtPane, stepPane, statsContainer, seedPane, exitBox);
 	    
 		/* Add everything to scene */
 	    scene.add(world, 0, 0);
@@ -540,6 +576,41 @@ public class Main extends Application {
 				scaleFactor / 2.67, scaleFactor / 4.0);
 	}
 	
+	private static void seedConfig() {
+		
+		/* Set seed columns */
+	    ColumnConstraints seedCol1 = new ColumnConstraints();
+	    seedCol1.setPercentWidth(60);
+	    seedCol1.setHalignment(HPos.CENTER);
+	    ColumnConstraints seedCol2 = new ColumnConstraints();
+	    seedCol2.setPercentWidth(20);
+	    seedCol2.setHalignment(HPos.CENTER);
+	    seedPane.getColumnConstraints().addAll(seedCol1, seedCol2);
+
+	    /* Set seed rows */
+	    RowConstraints seedRow1 = new RowConstraints();
+	    seedRow1.setPercentHeight(50);
+	    seedRow1.setValignment(VPos.BOTTOM);
+	    RowConstraints seedRow2 = new RowConstraints();
+	    seedRow2.setPercentHeight(50);
+	    seedRow2.setValignment(VPos.CENTER);
+	    seedPane.getRowConstraints().addAll(seedRow1, seedRow2);
+	    
+	    seedButton.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override
+		    public void handle(ActionEvent e) {
+				try { Critter.setSeed(Long.parseLong(seed.getText())); }
+				catch (NumberFormatException e1) { System.out.println("Not a number"); } 
+		    }
+	    });
+	    
+	    seedPane.setAlignment(Pos.CENTER);
+		
+		seedPane.add(seedLabel, 0, 0);
+		seedPane.add(seed, 0, 1);
+		seedPane.add(seedButton, 1, 1);
+	}
+	
 	private  ArrayList<String> listOfCritters ()throws URISyntaxException, ClassNotFoundException{
 		ArrayList <String>allcrits = new ArrayList<String>();
 		File directory =new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI());
@@ -599,6 +670,27 @@ public class Main extends Application {
 				
 				world.add(poly, oldx, oldy);
 				}
+				
+				class Console extends OutputStream {
+
+		            private TextArea output;
+
+		            public Console(TextArea ta) {
+		                this.output = ta;
+		            }
+
+		            @Override
+		            public void write(int i) throws IOException {
+		                output.appendText(String.valueOf((char) i));
+		            }
+		        }
+				
+		    	stats.clear();
+		    	Console console = new Console(stats);
+		        PrintStream ps = new PrintStream(console);
+		        System.setOut(ps);
+		        System.setErr(ps);
+		    	stats();
 				
 				// Circle circ = new Circle();
 				//circ.set..a.. setRadius (circle)
