@@ -420,6 +420,15 @@ public abstract class Critter {
 		/* Every critter takes a step */
 		for (Critter ls : population) { ls.doTimeStep(); }
 		
+		z=0;
+		for (int i =0; i< population.size();i++){
+			a[z] =population.get(i).x_coord;
+			z+=1;
+			a[z] =population.get(i).y_coord;
+			z+=1;
+		
+		}
+		
 		/* Check for overlapping critters */
 		for (int i = 0; i < population.size(); i++) {
 			

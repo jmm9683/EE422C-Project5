@@ -85,7 +85,7 @@ public class Main extends Application {
 	static Slider makeAmtMult = new Slider(0, 10, 1);
 	static Label makeAmtVal = new Label(Integer.toString((int) makeAmtSlider.getValue()));
 	static Button makeButton = new Button("Make");
-	
+
 	/* Step pane */
 	static Label stepLabel = new Label("Number of Steps");
 	static Label stepMultLabel = new Label("Multiplier");
@@ -209,11 +209,35 @@ public class Main extends Application {
         stepButton.setOnAction(new EventHandler<ActionEvent>() {
 		    @Override public void handle(ActionEvent e) {
 		    	 if (chkcombo || stepSlider.getValue() <= 0 || stepMult.getValue() <= 0) { stepButton.setDisable(true); }
-		         else { stepButton.setDisable(false); }
+		         else { stepButton.setDisable(false); 
+		         
+		         int nsteps = (int) (stepSlider.getValue()*stepMult.getValue());
+		         for (int j=0; j<nsteps;j++){
+                    Critter.worldTimeStep();
+		         
+		         }
+		         updatecanvas();
+		         }
 		         
 		    }});
         
+<<<<<<< HEAD
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+=======
         /* Statistics setup */
+>>>>>>> a0702f19db0064089e51cf600c513ae3dea8e396
         statsContainer.setAlignment(Pos.CENTER);
         statsContainer.setSpacing(10);
         statsContainer.setPadding(new Insets(20, 0, 0, 0));
