@@ -75,7 +75,7 @@ public class Main extends Application {
 	static Slider makeAmtSlider = new Slider(0, 100, 1);
 	static Slider makeAmtMult = new Slider(0, 10, 1);
 	static Label makeAmtVal = new Label(Integer.toString((int) makeAmtSlider.getValue()));
-	static Button makeButton = new Button();
+	static Button makeButton = new Button("Make");
 	
 	/* Step pane */
 	static Label stepLabel = new Label("Number of Steps");
@@ -84,14 +84,17 @@ public class Main extends Application {
 	static Slider stepSlider = new Slider(0, 100, 1);
 	static Slider stepMult = new Slider(0, 10, 1);
 	static Label stepVal = new Label(Integer.toString((int) stepSlider.getValue()));
-	static Button stepButton = new Button();
+	static Button stepButton = new Button("Step");
 	
 	/* Animate pane */
 	static Label aniLabel = new Label("Animate Speed");
 	static GridPane aniPane = new GridPane();
 	static Slider aniSlider = new Slider(0, 100, 1);
 	static Label aniVal = new Label(Integer.toString((int) aniSlider.getValue()));
-	static ToggleButton aniButton = new ToggleButton();
+	static ToggleButton aniButton = new ToggleButton("Animate");
+	
+	/* Run statistics */
+	static Button statsButton = new Button();
 	
 	/* Shapes */
 	static Circle circle = new Circle();
@@ -128,15 +131,6 @@ public class Main extends Application {
 		world.add(triangle, 2, 0);
 		world.add(diamond, 3, 0);
 		world.add(star, 4, 0);
-        
-        /* Button setup */
-        makeButton.setText("Make");
-        if (makeAmtSlider.getValue() < 1 || makeAmtMult.getValue() < 1) { makeButton.setDisable(true); }
-        else { makeButton.setDisable(false); }
-
-        stepButton.setText("Step");
-        if (stepSlider.getValue() <= 0 || stepMult.getValue() <= 0) { stepButton.setDisable(true); }
-        else { stepButton.setDisable(false); }
         
         /* Slider setup */
         makeAmtConfig();
@@ -371,7 +365,6 @@ public class Main extends Application {
 	    aniPane.getRowConstraints().addAll(aniRow1, aniRow2);
 	    
 	    /* Animation slider setup */
-		aniButton.setText("Animate");
 		aniSlider.setShowTickMarks(true);
 		aniSlider.setShowTickLabels(true);
 		aniSlider.setMajorTickUnit(25);
