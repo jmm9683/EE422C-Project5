@@ -16,10 +16,6 @@ package assignment5; // cannot be in default package
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.css.CssMetaData;
-import javafx.css.Styleable;
-import javafx.css.StyleableObjectProperty;
-import javafx.css.StyleableProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -28,21 +24,16 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.transform.Rotate;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import java.util.*;
-
-import com.sun.javafx.css.converters.PaintConverter;
-import com.sun.javafx.css.converters.SizeConverter;
 
 
 /*
@@ -58,6 +49,22 @@ public class Main extends Application {
 	final Label sliderVal = new Label(Integer.toString((int) slider.getValue()));
 	@Override
 	public void start(Stage primaryStage) {
+		
+		/* Board setup */
+		//board.setHgap(0);
+		//board.setVgap(0);
+		board.setGridLinesVisible(true);
+        for (int i = 0; i < Params.world_width; i++) {
+        	ColumnConstraints colConst = new ColumnConstraints();
+        	colConst.setPercentWidth(75.0 / Params.world_width);
+        	board.getColumnConstraints().add(colConst);
+        }
+        for (int i = 0; i < Params.world_height; i++) {
+        	RowConstraints rowConst = new RowConstraints();
+        	rowConst.setPercentHeight(75.0 / Params.world_height);
+        	board.getRowConstraints().add(rowConst);
+        }
+        
 		slider.setShowTickMarks(true);
 		slider.setShowTickLabels(true);
 		slider.setMajorTickUnit(10);
@@ -67,28 +74,19 @@ public class Main extends Application {
             	slider.setValue(new_val.intValue());
                 sliderVal.setText(String.valueOf(new_val.intValue())); }
         });
-		HBox box = new HBox();
-    	box.setAlignment(Pos.CENTER);
-        primaryStage.setTitle("Count");
-        Button btn = new Button();
-        btn.setText("Count");
-        Label lab = new Label(Integer.toString(count));
-        box.getChildren().addAll(lab);
-        btn.setOnAction(new EventHandler<ActionEvent>() {
-		    @Override public void handle(ActionEvent event) { lab.setText(Integer.toString(++count)); }
-        });
-
+/*
 		VBox vbox = new VBox();
 		vbox.setSpacing(5);
 		vbox.setAlignment(Pos.CENTER);
-		vbox.getChildren().addAll(box, btn, slider, sliderVal);
+		vbox.getChildren().addAll(board, slider, sliderVal);
 		 Canvas canvas = new Canvas(250,250);
 	        GraphicsContext gc = canvas.getGraphicsContext2D();
 	        gc.setFill(Color.BLUE);
 	        gc.fillRect(75,75,100,100);
-	        vbox.getChildren().add(canvas);
-        primaryStage.setScene(new Scene(vbox, 1000, 600));
-        primaryStage.show();
+	        vbox.getChildren().add(canvas);*/
+        //primaryStage.setScene(new Scene(vbox, 1000, 600));
+        primaryStage.setScene(new Scene(board, 1000, 6000));
+	    primaryStage.show();
         
        
 	}
