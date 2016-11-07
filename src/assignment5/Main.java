@@ -278,18 +278,18 @@ public class Main extends Application {
 		    	 else{
 				    	anibool=false;
 				    	aTimer.stop();
-				    	 makeAmtSlider.setDisable(true);
-		    			 makeAmtMult.setDisable(true);
-		    		    makeButton.setDisable(true);
-		    		    stepSlider.setDisable(true);
-		    		 stepMult.setDisable(true);
-		    		 stepButton.setDisable(true);
-		    	     aniButton.setDisable(true);
-		    	     aniSlider.setDisable(true);
-		    		 statsButton.setDisable(true);
-		    		 seedButton.setDisable(true);
-		    		 seed.setDisable(true);
-		    		 exitButton.setDisable(true);
+				    	 makeAmtSlider.setDisable(false);
+		    			 makeAmtMult.setDisable(false);
+		    		    makeButton.setDisable(false);
+		    		    stepSlider.setDisable(false);
+		    		 stepMult.setDisable(false);
+		    		 stepButton.setDisable(false);
+		    	     aniButton.setDisable(false);
+		    	     aniSlider.setDisable(false);
+		    		 statsButton.setDisable(false);
+		    		 seedButton.setDisable(false);
+		    		 seed.setDisable(false);
+		    		 exitButton.setDisable(false);
 				    
 				       
 				         
