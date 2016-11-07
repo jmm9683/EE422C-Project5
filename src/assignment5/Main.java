@@ -60,9 +60,10 @@ import assignment5.Critter.CritterShape;
  * May not use 'test' argument without specifying input file.
  */
 public class Main extends Application {
-	static GridPane world = new GridPane();
 	static GridPane scene = new GridPane();
+	static GridPane world = new GridPane();
 	static VBox controls = new VBox(10);
+	static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	
 	/* Make pane */
 	static Label makeAmtLabel = new Label("Number of Critters");
@@ -83,7 +84,7 @@ public class Main extends Application {
 	static Button stepButton = new Button();
 	
 	/* Shapes */
-	static Polygon circle = new Polygon();
+	static Circle circle = new Circle();
 	static Polygon square = new Polygon();
 	static Polygon triangle = new Polygon();
 	static Polygon diamond = new Polygon();
@@ -102,8 +103,11 @@ public class Main extends Application {
 		/* World setup */
 		worldConfig();
 		
-		world.add(triangle, 5, 0);
-		world.add(square, 0, 0);
+		world.add(circle, 0, 0);
+		world.add(square, 1, 0);
+		world.add(triangle, 2, 0);
+		world.add(diamond, 3, 0);
+		world.add(star, 4, 0);
         
         /* Button setup */
         makeButton.setText("Make");
@@ -129,7 +133,6 @@ public class Main extends Application {
 	    scene.add(world, 0, 0);
 	    scene.add(controls, 1, 0);
 		
-	    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         primaryStage.setScene(new Scene(scene, screenSize.getWidth(), screenSize.getHeight()));
 	    primaryStage.show();
         
@@ -288,9 +291,38 @@ public class Main extends Application {
 	}
 	
 	public static void shapeConfig() {
+<<<<<<< HEAD
+		circle.setRadius(200.0 / Params.world_width);
+		square.getPoints().addAll(
+				0.0, 0.0,
+				400.0 / Params.world_width, 0.0,
+				400.0 / Params.world_width, 400.0 / Params.world_width,
+				0.0, 400.0 / Params.world_width);
+		triangle.getPoints().addAll(
+				200.0 / Params.world_width, 0.0,
+				0.0, 400.0 / Params.world_width,
+				400.0 / Params.world_width, 400.0 / Params.world_width);
+		diamond.getPoints().addAll(
+				200.0 / Params.world_width, 0.0,
+				400.0 / Params.world_width, 200.0 / Params.world_width,
+				200.0 / Params.world_width, 400.0 / Params.world_width,
+				0.0, 200.0 / Params.world_width);
+		star.getPoints().addAll(
+				6.0, 0.0,
+				7.5, 3.0,
+				12.0, 3.0,
+				9.0, 6.0,
+				10.0, 10.0,
+				6.0, 7.5,
+				2.0, 10.0,
+				3.0, 6.0,
+				0.0, 3.0,
+				4.5, 3.0);
+=======
 		triangle.getPoints().addAll(5.0, 0.0, 1.0, 5.0, 9.0, 5.0);
 		square.getPoints().addAll(0.0, 0.0, 5.0, 0.0, 5.0, 5.0, 0.0, 5.0);
 		
+>>>>>>> 59f0f2f30c17d347bd336fdd4c54f1bd3584952b
 	}
 	
 	private  ArrayList<String> listOfCritters ()throws URISyntaxException, ClassNotFoundException{
