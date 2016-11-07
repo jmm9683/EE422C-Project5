@@ -14,6 +14,7 @@
 package assignment5; // cannot be in default package
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -124,6 +125,10 @@ public class Main extends Application {
 	        }
 	    }
 	};
+	
+	/* Exit */
+	static VBox exitBox = new VBox();
+	static Button exitButton = new Button("End Program");
 	
 	/* Shapes */
 	static Circle circle = new Circle();
@@ -249,11 +254,22 @@ public class Main extends Application {
 		        System.setOut(ps);
 		        System.setErr(ps);
 		    	stats();
-		    	}
+	    	}
+        });
+        
+        exitBox.setAlignment(Pos.CENTER);
+        exitBox.setPadding(new Insets(20, 0, 0, 0));
+        exitBox.getChildren().add(exitButton);
+        
+        exitButton.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override
+		    public void handle(ActionEvent e) {
+		    	Platform.exit();
+	    	}
         });
         
         /* Controls setup */
-        controls.getChildren().addAll(critterList, makeAmtPane, stepPane, statsContainer, seedPane);
+        controls.getChildren().addAll(critterList, makeAmtPane, stepPane, statsContainer, seedPane, exitBox);
 	    
 		/* Add everything to scene */
 	    scene.add(world, 0, 0);
@@ -626,6 +642,27 @@ public class Main extends Application {
 				
 				world.add(poly, oldx, oldy);
 				}
+				
+				class Console extends OutputStream {
+
+		            private TextArea output;
+
+		            public Console(TextArea ta) {
+		                this.output = ta;
+		            }
+
+		            @Override
+		            public void write(int i) throws IOException {
+		                output.appendText(String.valueOf((char) i));
+		            }
+		        }
+				
+		    	stats.clear();
+		    	Console console = new Console(stats);
+		        PrintStream ps = new PrintStream(console);
+		        System.setOut(ps);
+		        System.setErr(ps);
+		    	stats();
 				
 				// Circle circ = new Circle();
 				//circ.set..a.. setRadius (circle)
