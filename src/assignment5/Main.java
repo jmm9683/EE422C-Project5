@@ -21,6 +21,7 @@ import javafx.geometry.Pos;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.transform.Rotate;
@@ -37,6 +38,7 @@ import java.util.*;
  */
 public class Main extends Application {
 	static int count = 0;
+	final GridPane board = new GridPane();
 	final Slider slider = new Slider(0, 100, 0);
 	final Label sliderVal = new Label(Integer.toString((int) slider.getValue()));
 	@Override
