@@ -342,7 +342,7 @@ public class Main extends Application {
 				0.0, scaleFactor / 2.0);
 		star.getPoints().clear();
 		star.getPoints().addAll(
-				scaleFactor / 2.0, 0.0,
+				scaleFactor / 2.0, -(scaleFactor / 24.0),
 				scaleFactor / 1.6, scaleFactor / 4.0,
 				scaleFactor, scaleFactor / 4.0,
 				scaleFactor / 1.33, scaleFactor / 2.0,
