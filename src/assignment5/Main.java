@@ -117,11 +117,11 @@ public class Main extends Application {
         
         /* Button setup */
         makeButton.setText("Make");
-        if (makeAmtSlider.getValue() == 0 || makeAmtMult.getValue() == 0) { makeButton.setDisable(true); }
+        if (makeAmtSlider.getValue() < 2 || makeAmtMult.getValue() < 1) { makeButton.setDisable(true); }
         else { makeButton.setDisable(false); }
 
         stepButton.setText("Step");
-        if (stepSlider.getValue() == 0 || stepMult.getValue() == 0) { stepButton.setDisable(true); }
+        if (stepSlider.getValue() <= 0 || stepMult.getValue() <= 0) { stepButton.setDisable(true); }
         else { stepButton.setDisable(false); }
         
         /* Slider setup */
@@ -316,9 +316,11 @@ public class Main extends Application {
 	}
 	
 	public static void shapeConfig() {
+		double factor1 = (winHeight * 0.75) / Params.world_height;
+		double factor2 = (winWidth * 0.75) / Params.world_width;
 		double scaleFactor = (winHeight * 0.75) / Params.world_height;
 		System.out.println(scaleFactor);
-		circle.setRadius(scaleFactor / 6.0);
+		circle.setRadius(scaleFactor / 2.0);
 		square.getPoints().clear();
 		square.getPoints().addAll(
 				0.0, 0.0,
