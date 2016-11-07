@@ -14,6 +14,7 @@
 package assignment5; // cannot be in default package
 
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -44,6 +45,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.ToggleButton;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -81,8 +83,15 @@ public class Main extends Application {
 	static GridPane stepPane = new GridPane();
 	static Slider stepSlider = new Slider(0, 100, 1);
 	static Slider stepMult = new Slider(0, 10, 1);
-	static Label stepVal = new Label(Integer.toString((int) makeAmtSlider.getValue()));
+	static Label stepVal = new Label(Integer.toString((int) stepSlider.getValue()));
 	static Button stepButton = new Button();
+	
+	/* Animate pane */
+	static Label aniLabel = new Label("Animate Speed");
+	static GridPane aniPane = new GridPane();
+	static Slider aniSlider = new Slider(0, 100, 1);
+	static Label aniVal = new Label(Integer.toString((int) aniSlider.getValue()));
+	static ToggleButton aniButton = new ToggleButton();
 	
 	/* Shapes */
 	static Circle circle = new Circle();
@@ -106,6 +115,9 @@ public class Main extends Application {
 		
 		/* World setup */
 		worldConfig();
+		
+		/* Animation setup */
+		aniConfig();
 		
 		screenListener();
 		
@@ -138,6 +150,7 @@ public class Main extends Application {
 		/* Add everything to scene */
 	    scene.add(world, 0, 0);
 	    scene.add(controls, 1, 0);
+		scene.add(aniPane, 0, 1);
 	    
         primaryStage.setScene(new Scene(scene, screenSize.getWidth(), screenSize.getHeight()));
 	    primaryStage.show();
@@ -167,10 +180,10 @@ public class Main extends Application {
 	    
 	    /* Set scene rows */
 	    RowConstraints sceneRow1 = new RowConstraints();
-	    sceneRow1.setPercentHeight(75);
+	    sceneRow1.setPercentHeight(85);
 	    sceneRow1.setValignment(VPos.CENTER);
 	    RowConstraints sceneRow2 = new RowConstraints();
-	    sceneRow2.setPercentHeight(25);
+	    sceneRow2.setPercentHeight(15);
 	    sceneRow2.setValignment(VPos.CENTER);
 	    scene.getRowConstraints().addAll(sceneRow1, sceneRow2);
 	}
@@ -301,6 +314,50 @@ public class Main extends Application {
 		stepPane.add(stepButton, 1, 2);
 	}
 	
+	public static void aniConfig() {
+		
+		/* Set animation columns */
+	    ColumnConstraints aniCol1 = new ColumnConstraints();
+	    aniCol1.setPercentWidth(60);
+	    aniCol1.setHalignment(HPos.CENTER);
+	    ColumnConstraints aniCol2 = new ColumnConstraints();
+	    aniCol2.setPercentWidth(20);
+	    aniCol2.setHalignment(HPos.CENTER);
+	    ColumnConstraints aniCol3 = new ColumnConstraints();
+	    aniCol3.setPercentWidth(20);
+	    aniCol3.setHalignment(HPos.CENTER);
+	    aniPane.getColumnConstraints().addAll(aniCol1, aniCol2, aniCol3);
+
+	    /* Set animation rows */
+	    RowConstraints aniRow1 = new RowConstraints();
+	    aniRow1.setPercentHeight(50);
+	    aniRow1.setValignment(VPos.BOTTOM);
+	    RowConstraints aniRow2 = new RowConstraints();
+	    aniRow2.setPercentHeight(50);
+	    aniRow2.setValignment(VPos.CENTER);
+	    aniPane.getRowConstraints().addAll(aniRow1, aniRow2);
+	    
+	    /* Animation slider setup */
+		aniButton.setText("Animate");
+		aniSlider.setShowTickMarks(true);
+		aniSlider.setShowTickLabels(true);
+		aniSlider.setMajorTickUnit(25);
+		aniSlider.setPrefWidth(1000);
+		aniSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+            	aniSlider.setValue(new_val.intValue());
+            	if (new_val.intValue() < 1) { aniButton.setDisable(true); }
+            	else { aniButton.setDisable(false); }
+                aniVal.setText(String.valueOf(new_val.intValue())); }
+        });
+		
+		aniPane.add(aniLabel, 0, 0);
+		aniPane.add(aniSlider, 0, 1);
+		aniPane.add(aniVal, 1, 1);
+		aniPane.add(aniButton, 2, 1);
+		
+	}
+	
 	public static void screenListener() {
 		scene.widthProperty().addListener(new ChangeListener<Number>() {
 		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
@@ -342,7 +399,7 @@ public class Main extends Application {
 				0.0, scaleFactor / 2.0);
 		star.getPoints().clear();
 		star.getPoints().addAll(
-				scaleFactor / 2.0, -(scaleFactor / 24.0),
+				scaleFactor / 2.0, -(scaleFactor / 12.0),
 				scaleFactor / 1.6, scaleFactor / 4.0,
 				scaleFactor, scaleFactor / 4.0,
 				scaleFactor / 1.33, scaleFactor / 2.0,
