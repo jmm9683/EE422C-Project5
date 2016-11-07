@@ -12,6 +12,9 @@
  */
 
 package assignment5;
+
+import assignment5.Critter.CritterShape;
+
 /**
  * Critter1 is a type of critter that only moves in the west directions 
  * It  fights 66% of the time
@@ -33,7 +36,7 @@ public class Critter2 extends Critter {
      * @param String not_used 
      * @return boolean which indicates how critter will handle conflict
      */
-	public boolean fight(String not_used) { return Critter.getRandomInt(3) > 0; }
+	public boolean fight(String not_used) {int a = Critter.getRandomInt(3);String b = look(dir,true); return a > 0; }
 	/** do TimeStep method
      *  
      */
@@ -53,8 +56,8 @@ public class Critter2 extends Critter {
 		dir = Critter.getRandomInt(4) + 3;
 	}
 	@Override
-	public CritterShape viewShape() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
+	public CritterShape viewShape() { return CritterShape.CIRCLE;}
+	@Override
+	public javafx.scene.paint.Color viewFillColor() { return javafx.scene.paint.Color.MAGENTA; }
 }

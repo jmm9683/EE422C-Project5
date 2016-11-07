@@ -12,6 +12,9 @@
  */
 
 package assignment5;
+
+import assignment5.Critter.CritterShape;
+
 /**
  * Critter1 is a type of critter that only moves in the north directions 
  * It  fights 50% of the time
@@ -39,7 +42,7 @@ public class Critter1 extends Critter {
      */
 	@Override
 	public void doTimeStep() {
-		
+		String a = look(this.dir,false);
 		/* Take one step forward */
 		walk(dir);
 		
@@ -53,8 +56,8 @@ public class Critter1 extends Critter {
 		dir = Critter.getRandomInt(5);
 	}
 	@Override
-	public CritterShape viewShape() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public CritterShape viewShape() { return CritterShape.SQUARE;}
+	@Override
+	public javafx.scene.paint.Color viewOutlineColor() { return javafx.scene.paint.Color.TEAL; }
+
 }
