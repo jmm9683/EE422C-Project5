@@ -63,7 +63,7 @@ public class Main extends Application {
 	final Label makeAmtVal = new Label(Integer.toString((int) makeAmtSlider.getValue()));
 	@Override
 	public void start(Stage primaryStage) throws ClassNotFoundException, URISyntaxException {
-		
+		ArrayList<String> critters = listOfCritters();
 		/* Scene configuration */
 		scene.setHgap(10);
 		scene.setVgap(10);
@@ -162,12 +162,14 @@ public class Main extends Application {
        
 	}
 	
+	
+
 	public static void main(String[] args) {
 		launch(args);
 		Input.takeInput(new Scanner(System.in));
 	}
 	
-	private static ArrayList<String> listOfCritters ()throws URISyntaxException, ClassNotFoundException{
+	private  ArrayList<String> listOfCritters ()throws URISyntaxException, ClassNotFoundException{
 		ArrayList <String>allcrits = new ArrayList<String>();
 		File directory =new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI());
 		String pkg = Main.class.getPackage().toString().split(" ")[1];
