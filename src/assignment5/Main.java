@@ -94,6 +94,8 @@ public class Main extends Application {
 	/* Window size */
 	static double winWidth = screenSize.getWidth();
 	static double winHeight = screenSize.getHeight();
+	static boolean chkcombo =true;
+   
 	
 	@Override
 	public void start(Stage primaryStage) throws ClassNotFoundException, URISyntaxException {
@@ -117,7 +119,7 @@ public class Main extends Application {
         
         /* Button setup */
         makeButton.setText("Make");
-        if (makeAmtSlider.getValue() < 2 || makeAmtMult.getValue() < 1) { makeButton.setDisable(true); }
+        if (makeAmtSlider.getValue() < 1 || makeAmtMult.getValue() < 1) { makeButton.setDisable(true); }
         else { makeButton.setDisable(false); }
 
         stepButton.setText("Step");
@@ -127,11 +129,39 @@ public class Main extends Application {
         /* Slider setup */
         makeAmtConfig();
         stepConfig();
-	    
-	    ObservableList<String> oList = FXCollections.observableArrayList(listOfCritters());
-	    final ComboBox<String> critterList = new ComboBox<String>(oList);
+        ObservableList<String> oList = FXCollections.observableArrayList(listOfCritters());
+        ComboBox<String> critterList = new ComboBox<String>(oList);
+        critterList.setPromptText("Select Critter");
 	    //critterList.getSelectionModel().setSelectedIndex(0);
+	   
+        critterList.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override public void handle(ActionEvent e) {
+		    	 chkcombo =false;
+		    	
+		         
+		    }});
         
+        
+//		------- Button Handlers 
+        makeButton.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override public void handle(ActionEvent e) {
+		    	 if (chkcombo || makeAmtSlider.getValue() < 1 || makeAmtMult.getValue() < 1) { makeButton.setDisable(true); }
+		         else { makeButton.setDisable(false);
+		         
+		         int nocritters =(int) ((int) makeAmtSlider.getValue() * makeAmtMult.getValue());
+		         for (int i =0; i<nocritters;i++){
+		        	try {
+						Critter.makeCritter(critterList.getValue());
+					} catch (InvalidCritterException e1) {
+						e1.printStackTrace();
+					}
+		         }
+		         updatecanvas();
+		         }
+		         }
+		       
+		    }
+		);
         /* Controls setup */
         controls.getChildren().addAll(critterList, makeAmtPane, stepPane);
 	    
@@ -141,6 +171,9 @@ public class Main extends Application {
 	    
         primaryStage.setScene(new Scene(scene, screenSize.getWidth(), screenSize.getHeight()));
 	    primaryStage.show();
+	    
+	    
+	    
         
 	}
 	
@@ -369,7 +402,7 @@ public class Main extends Application {
 		return allcrits;
 }
 	public static void updatecanvas(){
-		worldConfig();
+		worldClear();
 		String a = "Crittersgetter";
 		try {
 			List<Critter> chkpop = Critter.getInstances(a);
@@ -416,13 +449,17 @@ public class Main extends Application {
 			e.printStackTrace();
 		}
 		
+
+		
 //		------- Button Handlers
 		
 		
-		
-		
-		
+		stepButton.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override public void handle(ActionEvent e) {
+		    	 if (chkcombo || stepSlider.getValue() <= 0 || stepMult.getValue() <= 0) { stepButton.setDisable(true); }
+		         else { stepButton.setDisable(false); }
+		         
+		    }});
+	
 	}
-	
-	
 }
