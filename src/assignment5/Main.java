@@ -143,7 +143,7 @@ public class Main extends Application {
 	/* Window size */
 	static double winWidth = screenSize.getWidth();
 	static double winHeight = screenSize.getHeight();
-	static boolean chkcombo =true;
+	static boolean chkcombo = false;
    
 	
 	@Override
@@ -187,37 +187,26 @@ public class Main extends Application {
 	   
         critterList.setOnAction(new EventHandler<ActionEvent>() {
 		    @Override public void handle(ActionEvent e) {
-		    	 chkcombo =false;
-		    	
-		         
-		    }});
+		    	chkcombo = true;
+		    }
+	    });
         
         
 //		
         makeButton.setOnAction(new EventHandler<ActionEvent>() {
 		    @Override public void handle(ActionEvent e) {
-		    	 if (chkcombo || makeAmtSlider.getValue() < 1 || makeAmtMult.getValue() < 1) { makeButton.setDisable(true); }
-		         else { makeButton.setDisable(false);
-		         
-		         int nocritters =(int) ((int) makeAmtSlider.getValue() * makeAmtMult.getValue());
-		         for (int i =0; i<nocritters;i++){
-		        	try {
+				int nocritters =(int) ((int) makeAmtSlider.getValue() * makeAmtMult.getValue());
+				for (int i =0; i<nocritters;i++){
+					try {
 						Critter.makeCritter(critterList.getValue());
-					} catch (InvalidCritterException e1) {
-						e1.printStackTrace();
-					}
-		         }
-		         updatecanvas();
-		         }
-		         }
-		       
-		    }
-		);
+					} catch (Exception e1) { }
+				}
+				updatecanvas();
+			}
+        });
         
         stepButton.setOnAction(new EventHandler<ActionEvent>() {
 		    @Override public void handle(ActionEvent e) {
-		    	 if (chkcombo || stepSlider.getValue() <= 0 || stepMult.getValue() <= 0) { stepButton.setDisable(true); }
-		         else { stepButton.setDisable(false); 
 		         
 		         int nsteps = (int) (stepSlider.getValue()*stepMult.getValue());
 		         for (int j=0; j<nsteps;j++){
@@ -227,7 +216,7 @@ public class Main extends Application {
 		         updatecanvas();
 		         }
 		         
-		    }});
+		    });
         
 
         
@@ -398,7 +387,7 @@ public class Main extends Application {
 		makeAmtSlider.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
             	makeAmtSlider.setValue(new_val.intValue());
-            	if ((int) makeAmtMult.getValue() * new_val.intValue() < 1) { makeButton.setDisable(true); }
+            	if (((int) makeAmtMult.getValue() * new_val.intValue() < 1)) { makeButton.setDisable(true); }
             	else { makeButton.setDisable(false); }
                 makeAmtVal.setText(String.valueOf((int)((int) makeAmtMult.getValue() * new_val.intValue()))); }
         });
@@ -411,7 +400,7 @@ public class Main extends Application {
 		makeAmtMult.setPrefWidth(1000);
 		makeAmtMult.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-            	if ((int) makeAmtSlider.getValue() * new_val.intValue() < 1) { makeButton.setDisable(true); }
+            	if (((int) makeAmtSlider.getValue() * new_val.intValue() < 1)) { makeButton.setDisable(true); }
             	else { makeButton.setDisable(false); }
                 makeAmtVal.setText(String.valueOf((int)((int) makeAmtSlider.getValue() * new_val.intValue()))); }
         });
@@ -696,10 +685,7 @@ public class Main extends Application {
 				//circ.set..a.. setRadius (circle)
 				
 			}
-		} catch (InvalidCritterException e) {
-
-			e.printStackTrace();
-		}
+		} catch (Exception e) { }
 		
 
 		
@@ -712,6 +698,6 @@ public class Main extends Application {
 	
 	public static void stats() {
 		try { Class.forName(myPackage + "." + critterList.getValue()).getMethod("runStats", List.class).invoke(critterList.getValue(), Critter.getInstances(critterList.getValue())); }
-		catch (Exception e) { System.out.println("What have you done??"); }
+		catch (Exception e) { }
 	}
 }
