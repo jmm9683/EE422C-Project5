@@ -131,7 +131,7 @@ public class Main extends Application {
         
         /* Button setup */
         makeButton.setText("Make");
-        if (makeAmtSlider.getValue() < 1 || makeAmtMult.getValue() < 1) { makeButton.setDisable(true); }
+        if (makeAmtSlider.getValue() < 1 || makeAmtMult.getValue() < 1|| chkcombo) { makeButton.setDisable(true); }
         else { makeButton.setDisable(false); }
 
         stepButton.setText("Step");
@@ -145,6 +145,8 @@ public class Main extends Application {
         ComboBox<String> critterList = new ComboBox<String>(oList);
         critterList.setPromptText("Select Critter");
 	    //critterList.getSelectionModel().setSelectedIndex(0);
+        
+       // ------- Button Handlers 
 	   
         critterList.setOnAction(new EventHandler<ActionEvent>() {
 		    @Override public void handle(ActionEvent e) {
@@ -154,7 +156,7 @@ public class Main extends Application {
 		    }});
         
         
-//		------- Button Handlers 
+//		
         makeButton.setOnAction(new EventHandler<ActionEvent>() {
 		    @Override public void handle(ActionEvent e) {
 		    	 if (chkcombo || makeAmtSlider.getValue() < 1 || makeAmtMult.getValue() < 1) { makeButton.setDisable(true); }
@@ -174,6 +176,13 @@ public class Main extends Application {
 		       
 		    }
 		);
+        
+        stepButton.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override public void handle(ActionEvent e) {
+		    	 if (chkcombo || stepSlider.getValue() <= 0 || stepMult.getValue() <= 0) { stepButton.setDisable(true); }
+		         else { stepButton.setDisable(false); }
+		         
+		    }});
         /* Controls setup */
         controls.getChildren().addAll(critterList, makeAmtPane, stepPane);
 	    
@@ -515,12 +524,7 @@ public class Main extends Application {
 //		------- Button Handlers
 		
 		
-		stepButton.setOnAction(new EventHandler<ActionEvent>() {
-		    @Override public void handle(ActionEvent e) {
-		    	 if (chkcombo || stepSlider.getValue() <= 0 || stepMult.getValue() <= 0) { stepButton.setDisable(true); }
-		         else { stepButton.setDisable(false); }
-		         
-		    }});
+		
 	
 	}
 }
