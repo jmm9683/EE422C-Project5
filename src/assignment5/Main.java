@@ -50,6 +50,8 @@ import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
 import java.util.*;
 
+import assignment5.Critter.CritterShape;
+
 
 /*
  * Usage: java assignment5.Main <input file> test
@@ -58,20 +60,33 @@ import java.util.*;
  */
 public class Main extends Application {
 	static GridPane world = new GridPane();
-	
 	static GridPane scene = new GridPane();
 	static VBox controls = new VBox(10);
+	
+	/* Make pane */
 	static Label makeAmtLabel = new Label("Number of Critters");
-	static Label multiplierLabel = new Label("Multiplier");
+	static Label makeMultLabel = new Label("Multiplier");
 	static GridPane makeAmtPane = new GridPane();
 	static Slider makeAmtSlider = new Slider(0, 100, 1);
 	static Slider makeAmtMult = new Slider(0, 10, 1);
 	static Label makeAmtVal = new Label(Integer.toString((int) makeAmtSlider.getValue()));
 	static Button makeButton = new Button();
 	
+	/* Step pane */
+	static Label stepLabel = new Label("Number of Steps");
+	static Label stepMultLabel = new Label("Multiplier");
+	static GridPane stepPane = new GridPane();
+	static Slider stepSlider = new Slider(0, 100, 1);
+	static Slider stepMult = new Slider(0, 10, 1);
+	static Label stepVal = new Label(Integer.toString((int) makeAmtSlider.getValue()));
+	static Button stepButton = new Button();
+	
 	/* Shapes */
-	static Polygon triangle = new Polygon();
+	static Polygon circle = new Polygon();
 	static Polygon square = new Polygon();
+	static Polygon triangle = new Polygon();
+	static Polygon diamond = new Polygon();
+	static Polygon star = new Polygon();
 	
 	
 	@Override
@@ -89,27 +104,25 @@ public class Main extends Application {
 		world.add(triangle, 5, 0);
 		world.add(square, 0, 0);
         
-        /* Make button setup */
+        /* Button setup */
         makeButton.setText("Make");
         if (makeAmtSlider.getValue() == 0 || makeAmtMult.getValue() == 0) { makeButton.setDisable(true); }
         else { makeButton.setDisable(false); }
+
+        stepButton.setText("Step");
+        if (stepSlider.getValue() == 0 || stepMult.getValue() == 0) { stepButton.setDisable(true); }
+        else { stepButton.setDisable(false); }
         
-        /* Make amount slider setup */
+        /* Slider setup */
         makeAmtConfig();
-        
-	    makeAmtPane.add(makeAmtLabel, 0, 0);
-	    makeAmtPane.add(makeAmtSlider, 0, 1);
-	    makeAmtPane.add(multiplierLabel, 0, 2);
-	    makeAmtPane.add(makeAmtMult, 0, 3);
-	    makeAmtPane.add(makeAmtVal, 1, 1);
-	    makeAmtPane.add(makeButton, 1, 2);
+        stepConfig();
 	    
 	    ObservableList<String> oList = FXCollections.observableArrayList(listOfCritters());
 	    final ComboBox<String> critterList = new ComboBox<String>(oList);
 	    //critterList.getSelectionModel().setSelectedIndex(0);
         
         /* Controls setup */
-        controls.getChildren().addAll(critterList, makeAmtPane);
+        controls.getChildren().addAll(critterList, makeAmtPane, stepPane);
 	    
 		/* Add everything to scene */
 	    scene.add(world, 0, 0);
@@ -212,11 +225,74 @@ public class Main extends Application {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
                 makeAmtVal.setText(String.valueOf((int)((int) makeAmtSlider.getValue() * new_val.intValue()))); }
         });
+        
+	    makeAmtPane.add(makeAmtLabel, 0, 0);
+	    makeAmtPane.add(makeAmtSlider, 0, 1);
+	    makeAmtPane.add(makeMultLabel, 0, 2);
+	    makeAmtPane.add(makeAmtMult, 0, 3);
+	    makeAmtPane.add(makeAmtVal, 1, 1);
+	    makeAmtPane.add(makeButton, 1, 2);
+	}
+	
+	public static void stepConfig() {
+		
+		/* Set make amount columns */
+	    ColumnConstraints stepCol1 = new ColumnConstraints();
+	    stepCol1.setPercentWidth(75);
+	    stepCol1.setHalignment(HPos.CENTER);
+	    ColumnConstraints stepCol2 = new ColumnConstraints();
+	    stepCol2.setPercentWidth(25);
+	    stepCol2.setHalignment(HPos.CENTER);
+	    stepPane.getColumnConstraints().addAll(stepCol1, stepCol2);
+	    
+	    /* Set make amount rows */
+	    RowConstraints stepRow1 = new RowConstraints();
+	    stepRow1.setPercentHeight(50);
+	    RowConstraints stepRow2 = new RowConstraints();
+	    stepRow2.setPercentHeight(50);
+	    RowConstraints stepRow3 = new RowConstraints();
+	    stepRow3.setPercentHeight(50);
+	    RowConstraints stepRow4 = new RowConstraints();
+	    stepRow4.setPercentHeight(50);
+	    stepPane.getRowConstraints().addAll(stepRow1, stepRow2, stepRow3, stepRow4);
+		
+		/* Make amount slider setup */
+		stepSlider.setShowTickMarks(true);
+		stepSlider.setShowTickLabels(true);
+		stepSlider.setMajorTickUnit(25);
+		stepSlider.setPrefWidth(1000);
+		stepSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+            	stepSlider.setValue(new_val.intValue());
+                stepVal.setText(String.valueOf((int)((int) stepMult.getValue() * new_val.intValue()))); }
+        });
+		
+		/* Make amount multiplier setup */
+		stepMult.setShowTickMarks(true);
+		stepMult.setShowTickLabels(true);
+		stepMult.setSnapToTicks(true);
+		stepMult.setMajorTickUnit(5);
+		stepMult.setPrefWidth(1000);
+		stepMult.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+                stepVal.setText(String.valueOf((int)((int) stepSlider.getValue() * new_val.intValue()))); }
+        });
+		
+		stepPane.add(stepLabel, 0, 0);
+		stepPane.add(stepSlider, 0, 1);
+		stepPane.add(stepMultLabel, 0, 2);
+		stepPane.add(stepMult, 0, 3);
+		stepPane.add(stepVal, 1, 1);
+		stepPane.add(stepButton, 1, 2);
 	}
 	
 	public static void shapeConfig() {
 		triangle.getPoints().addAll(5.0, 0.0, 1.0, 5.0, 9.0, 5.0);
 		square.getPoints().addAll(0.0, 0.0, 5.0, 0.0, 5.0, 5.0, 0.0, 5.0);
+		
+		square.getPoints().addAll(0.0, 0.0, 10.0, 0.0, 10.0, 10.0, 0.0, 10.0);
+		
+		triangle.getPoints().addAll(5.0, 0.0, 0.0, 10.0, 10.0, 10.0);
 	}
 	
 	private  ArrayList<String> listOfCritters ()throws URISyntaxException, ClassNotFoundException{
