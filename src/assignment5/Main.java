@@ -45,14 +45,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
 import java.util.*;
+import java.io.*;
 
 import assignment5.Critter.CritterShape;
 
@@ -63,10 +65,16 @@ import assignment5.Critter.CritterShape;
  * May not use 'test' argument without specifying input file.
  */
 public class Main extends Application {
+	
+	private static String myPackage;
+	static { myPackage = Critter.class.getPackage().toString().split(" ")[1]; }
+	
+	/* Overall UI tools */
 	static GridPane scene = new GridPane();
 	static GridPane world = new GridPane();
 	static VBox controls = new VBox(10);
 	static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    static ComboBox<String> critterList = new ComboBox<String>();
 	
 	/* Make pane */
 	static Label makeAmtLabel = new Label("Number of Critters");
@@ -94,8 +102,10 @@ public class Main extends Application {
 	static ToggleButton aniButton = new ToggleButton("Animate");
 	
 	/* Run statistics */
-	static HBox statsContainer = new HBox();
+	static VBox statsContainer = new VBox();
 	static Button statsButton = new Button("Run Stats");
+	static TextArea stats = new TextArea();
+	static PrintStream ps;
 	
 	/* Shapes */
 	static Circle circle = new Circle();
@@ -125,20 +135,23 @@ public class Main extends Application {
 		/* Animation setup */
 		aniConfig();
 		
+		/* Listen for screen resize */
 		screenListener();
 		
+		/* Test polygons
 		world.add(circle, 0, 0);
 		world.add(square, 1, 0);
 		world.add(triangle, 2, 0);
 		world.add(diamond, 3, 0);
 		world.add(star, 4, 0);
-        
+        */
 
         /* Slider setup */
         makeAmtConfig();
         stepConfig();
+        
         ObservableList<String> oList = FXCollections.observableArrayList(listOfCritters());
-        ComboBox<String> critterList = new ComboBox<String>(oList);
+        critterList = new ComboBox<String>(oList);
         critterList.setPromptText("Select Critter");
 	    //critterList.getSelectionModel().setSelectedIndex(0);
         
@@ -188,6 +201,7 @@ public class Main extends Application {
 		         
 		    }});
         
+<<<<<<< HEAD
         
         
         
@@ -201,9 +215,39 @@ public class Main extends Application {
         
         
         
+=======
+        /* Statistics setup */
+>>>>>>> a0702f19db0064089e51cf600c513ae3dea8e396
         statsContainer.setAlignment(Pos.CENTER);
+        statsContainer.setSpacing(10);
         statsContainer.setPadding(new Insets(20, 0, 0, 0));
-        statsContainer.getChildren().add(statsButton);
+        statsContainer.getChildren().addAll(statsButton, stats);
+        
+        class Console extends OutputStream {
+
+            private TextArea output;
+
+            public Console(TextArea ta) {
+                this.output = ta;
+            }
+
+            @Override
+            public void write(int i) throws IOException {
+                output.appendText(String.valueOf((char) i));
+            }
+        }
+        
+        statsButton.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override
+		    public void handle(ActionEvent e) {
+		    	stats.clear();
+		    	Console console = new Console(stats);
+		        PrintStream ps = new PrintStream(console);
+		        System.setOut(ps);
+		        System.setErr(ps);
+		    	stats();
+		    	}
+        });
         
         /* Controls setup */
         controls.getChildren().addAll(critterList, makeAmtPane, stepPane, statsContainer);
@@ -421,6 +465,8 @@ public class Main extends Application {
                 aniVal.setText(String.valueOf(new_val.intValue())); }
         });
 		
+		aniPane.setPadding(new Insets(0, 0, 10, 0));
+		
 		aniPane.add(aniLabel, 0, 0);
 		aniPane.add(aniSlider, 0, 1);
 		aniPane.add(aniVal, 1, 1);
@@ -559,5 +605,10 @@ public class Main extends Application {
 		
 		
 	
+	}
+	
+	public static void stats() {
+		try { Class.forName(myPackage + "." + critterList.getValue()).getMethod("runStats", List.class).invoke(critterList.getValue(), Critter.getInstances(critterList.getValue())); }
+		catch (Exception e) { System.out.println("What have you done??"); }
 	}
 }
