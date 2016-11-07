@@ -13,6 +13,7 @@
 
 package assignment5; // cannot be in default package
 
+import javafx.animation.AnimationTimer;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -73,6 +74,7 @@ public class Main extends Application {
 	static { myPackage = Critter.class.getPackage().toString().split(" ")[1]; }
 	
 	Timeline timeline = new Timeline ();
+	static boolean anibool =false;
 	
 	/* Overall UI tools */
 	static GridPane scene = new GridPane();
@@ -89,6 +91,7 @@ public class Main extends Application {
 	static Slider makeAmtMult = new Slider(0, 10, 1);
 	static Label makeAmtVal = new Label(Integer.toString((int) makeAmtSlider.getValue()));
 	static Button makeButton = new Button("Make");
+
 
 	/* Step pane */
 	static Label stepLabel = new Label("Number of Steps");
@@ -177,7 +180,7 @@ public class Main extends Application {
         /* Slider setup */
         makeAmtConfig();
         stepConfig();
-        
+       
         ObservableList<String> oList = FXCollections.observableArrayList(listOfCritters());
         critterList = new ComboBox<String>(oList);
         critterList.setPromptText("Select Critter");
@@ -221,26 +224,88 @@ public class Main extends Application {
 
         
         
+        
+        
+        
+        class AnimateTimer extends AnimationTimer{
+        	private int timesteps;
+        	AnimateTimer(int timesteps){
+        		this.timesteps =timesteps;
+        		
+        	}
+        	
+        	@Override
+        	public void handle(long now){
+        		
+        		for (int i =0; i<timesteps;i++){
+        			
+        			Critter.worldTimeStep();
+        			
+        		}
+        		updatecanvas();
+        		
+        	}
+        	
+        	
+        }
+        
         aniButton.setOnAction(new EventHandler<ActionEvent>() {
 		    @Override public void handle(ActionEvent e) {
-		    	 if (aniSlider.getValue() <= 0 ) { aniButton.setDisable(true); }
-		    	 if(!aniButton.isSelected()){
-		          stepButton.setDisable(false);
-		         aniButton.setDisable(true);
-		         makeButton.setDisable(true);
-		         statsButton.setDisable(true);
-		         seedButton.setDisable(true);
-		         int frate =(int)aniSlider.getValue();
+		    	try{
+		    	if (aniButton.isSelected()){
+		    		
+		    			
+		    			int timeSteps =(int) aniSlider.getValue();
+		    			anibool=true;
+		    			AnimateTimer aTimer = new AnimateTimer(timeSteps);
+		    			aTimer.start();
+		    			 makeAmtSlider.setDisable(true);
+		    			 makeAmtMult.setDisable(true);
+		    		    makeButton.setDisable(true);
+		    		    stepSlider.setDisable(true);
+		    		 stepMult.setDisable(true);
+		    		 stepButton.setDisable(true);
+		    	     aniButton.setDisable(true);
+		    	     aniSlider.setDisable(true);
+		    		 
+		    		 statsButton.setDisable(true);
+		    		 seedButton.setDisable(true);
+		    		 seed.setDisable(true);
+		    		 exitButton.setDisable(true);
+		    	     		
+		    				
+		    		}
+		    	 else{
+				    	anibool=false;
+				    	aTimer.stop();
+				    	 makeAmtSlider.setDisable(true);
+		    			 makeAmtMult.setDisable(true);
+		    		    makeButton.setDisable(true);
+		    		    stepSlider.setDisable(true);
+		    		 stepMult.setDisable(true);
+		    		 stepButton.setDisable(true);
+		    	     aniButton.setDisable(true);
+		    	     aniSlider.setDisable(true);
+		    		 statsButton.setDisable(true);
+		    		 seedButton.setDisable(true);
+		    		 seed.setDisable(true);
+		    		 exitButton.setDisable(true);
+				    
+				       
+				         
+				    }
+		    		
+		    	}
+		    
+		   
 		         
-		         
-		         
-		         
-		         
-		 
-		         updatecanvas();
+		     
 		         }
+		    catch(Exception e1){
+    			
+    		}
 		         
-		    }});
+		    });
         
 
         statsContainer.setAlignment(Pos.CENTER);
@@ -414,7 +479,8 @@ public class Main extends Application {
 	}
 	
 	public static void stepConfig() {
-		
+		/*Initial disable*/
+		stepButton.setDisable(true);
 		/* Set make amount columns */
 	    ColumnConstraints stepCol1 = new ColumnConstraints();
 	    stepCol1.setPercentWidth(75);
@@ -454,6 +520,10 @@ public class Main extends Application {
 		stepMult.setPrefWidth(1000);
 		stepMult.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+            	if(stepSlider.getValue()*new_val.intValue()>0){
+            		stepButton.setDisable(false);
+            	}
+            	else{stepButton.setDisable(true);}
                 stepVal.setText(String.valueOf((int)((int) stepSlider.getValue() * new_val.intValue()))); }
         });
 		
@@ -466,8 +536,10 @@ public class Main extends Application {
 	}
 	
 	public static void aniConfig() {
-		
+		/*Initial disable*/
+		aniButton.setDisable(false);
 		/* Set animation columns */
+		
 	    ColumnConstraints aniCol1 = new ColumnConstraints();
 	    aniCol1.setPercentWidth(60);
 	    aniCol1.setHalignment(HPos.CENTER);
