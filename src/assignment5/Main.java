@@ -293,7 +293,7 @@ public class Main extends Application {
 	
 	public static void sceneConfig() {
 		scene.setHgap(10);
-		scene.setVgap(10);
+		scene.setVgap(0);
 		scene.setPadding(new Insets(10, 10, 10 ,10));
 		
 		/* Set scene columns */
@@ -311,7 +311,7 @@ public class Main extends Application {
 	    sceneRow1.setValignment(VPos.CENTER);
 	    RowConstraints sceneRow2 = new RowConstraints();
 	    sceneRow2.setPercentHeight(15);
-	    sceneRow2.setValignment(VPos.CENTER);
+	    sceneRow2.setValignment(VPos.TOP);
 	    scene.getRowConstraints().addAll(sceneRow1, sceneRow2);
 	}
 	
