@@ -13,6 +13,7 @@
 
 package assignment5; // cannot be in default package
 
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -70,6 +71,8 @@ public class Main extends Application {
 	
 	private static String myPackage;
 	static { myPackage = Critter.class.getPackage().toString().split(" ")[1]; }
+	
+	Timeline timeline = new Timeline ();
 	
 	/* Overall UI tools */
 	static GridPane scene = new GridPane();
@@ -226,6 +229,31 @@ public class Main extends Application {
 		         
 		    }});
         
+
+        
+        
+        aniButton.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override public void handle(ActionEvent e) {
+		    	 if (aniSlider.getValue() <= 0 ) { aniButton.setDisable(true); }
+		    	 if(!aniButton.isSelected()){
+		          stepButton.setDisable(false);
+		         aniButton.setDisable(true);
+		         makeButton.setDisable(true);
+		         statsButton.setDisable(true);
+		         seedButton.setDisable(true);
+		         int frate =(int)aniSlider.getValue();
+		         
+		         
+		         
+		         
+		         
+		 
+		         updatecanvas();
+		         }
+		         
+		    }});
+        
+
         statsContainer.setAlignment(Pos.CENTER);
         statsContainer.setSpacing(10);
         statsContainer.setPadding(new Insets(20, 0, 0, 0));
