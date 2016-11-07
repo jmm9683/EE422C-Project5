@@ -291,6 +291,7 @@ public class Main extends Application {
 	}
 	
 	public static void shapeConfig() {
+<<<<<<< HEAD
 		circle.setRadius(200.0 / Params.world_width);
 		square.getPoints().addAll(
 				0.0, 0.0,
@@ -317,6 +318,11 @@ public class Main extends Application {
 				3.0, 6.0,
 				0.0, 3.0,
 				4.5, 3.0);
+=======
+		triangle.getPoints().addAll(5.0, 0.0, 1.0, 5.0, 9.0, 5.0);
+		square.getPoints().addAll(0.0, 0.0, 5.0, 0.0, 5.0, 5.0, 0.0, 5.0);
+		
+>>>>>>> 59f0f2f30c17d347bd336fdd4c54f1bd3584952b
 	}
 	
 	private  ArrayList<String> listOfCritters ()throws URISyntaxException, ClassNotFoundException{
@@ -342,10 +348,43 @@ public class Main extends Application {
 		String a = "Crittersgetter";
 		try {
 			List<Critter> chkpop = Critter.getInstances(a);
+			for (Critter ls : chkpop){
+				Polygon poly = new Polygon();
+				int oldx =ls.getX();
+				int oldy = ls.getY();
+				poly.setFill  (ls.viewFillColor());
+				poly.setStroke(ls.viewOutlineColor());
+				CritterShape b = ls.viewShape();
+				if(b==CritterShape.CIRCLE){
+				poly.getPoints().addAll(circle.getPoints());
+				}
+				if(b==CritterShape.SQUARE){
+					poly.getPoints().addAll(square.getPoints());
+					}
+				
+				if(b==CritterShape.DIAMOND){
+					poly.getPoints().addAll(diamond.getPoints());
+					}
+				
+				if(b==CritterShape.STAR){
+					poly.getPoints().addAll(star.getPoints());
+					}
+				
+				if(b== CritterShape.TRIANGLE){
+					poly.getPoints().addAll(triangle.getPoints());
+				}
+				
+				scene.add(poly, oldx, oldy);
+				
+				
+				
+			}
 		} catch (InvalidCritterException e) {
 
 			e.printStackTrace();
 		}
+		
+		
 		
 		
 		
