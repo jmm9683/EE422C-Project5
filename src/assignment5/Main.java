@@ -16,6 +16,8 @@ package assignment5; // cannot be in default package
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -52,14 +54,14 @@ public class Main extends Application {
 	final GridPane scene = new GridPane();
 	final GridPane world = new GridPane();
 	final VBox controls = new VBox(20);
-	final ComboBox critterList = new ComboBox();
+	ComboBox critterList = new ComboBox();
 	final VBox makeAmtLab = new VBox(10);
 	final Label makeAmtLabel = new Label("Number of Critters");
 	final GridPane makeAmtPane = new GridPane();
 	final Slider makeAmtSlider = new Slider(0, 100, 0);
 	final Label makeVal = new Label(Integer.toString((int) makeAmtSlider.getValue()));
 	@Override
-	public void start(Stage primaryStage) {
+	public void start(Stage primaryStage) throws ClassNotFoundException, URISyntaxException {
 		
 		/* Scene configuration */
 		scene.setHgap(10);
@@ -92,7 +94,8 @@ public class Main extends Application {
         	rowConst.setPercentHeight(100.0 / Params.world_height);
         	world.getRowConstraints().add(rowConst);
         }
-
+        
+        /*  */
 		makeAmtPane.setHgap(10);
 		makeAmtPane.setVgap(10);
         
@@ -113,6 +116,10 @@ public class Main extends Application {
 	    makeAmtPane.add(makeAmtLabel, 1, 0);
 	    makeAmtPane.add(makeVal, 0, 1);
 	    makeAmtPane.add(makeAmtSlider, 1, 1);
+	    
+	    //ObservableList<String> oList = FXCollections.observableArrayList(listOfCritters());
+	    //critterList = new ComboBox(oList);
+	    //System.out.println(listOfCritters());
         
         /* Controls setup */
         controls.getChildren().addAll(critterList, makeAmtPane);
