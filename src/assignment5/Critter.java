@@ -54,11 +54,54 @@ public abstract class Critter {
 	private static String myPackage;
 	private	static List<Critter> population = new java.util.ArrayList<Critter>();
 	private static List<Critter> babies = new java.util.ArrayList<Critter>();
+	private static int [] a = new int [population.size()*2];
 
 	/* Gets the package name.  Assumes that Critter and its subclasses are all in the same package. */
 	static { myPackage = Critter.class.getPackage().toString().split(" ")[1]; }
 	
-	protected String look(int direction, boolean steps) {return "";}
+	protected String look(int direction, boolean steps) {
+		int nsteps=1;
+		int x = this.x_coord;
+		int y =this.y_coord;
+		this.energy-=Params.look_energy_cost;
+		if(steps){
+			
+			nsteps=2;
+		}
+		switch (direction) {
+		case 0: 	x += nsteps;
+					break;
+		case 1:    	x += nsteps;
+					y -= nsteps;
+					break;
+		case 2: 	y -= nsteps;
+					break;
+		case 3: 	x -= nsteps;
+					y -= nsteps;
+					break;
+		case 4: 	x -= nsteps;
+					break;
+		case 5: 	x -= nsteps;
+					y += nsteps;
+					break;
+		case 6: 	y += nsteps;
+					break;
+		case 7: 	x += nsteps;
+					y += nsteps;
+					break;
+		default:	break;
+	}
+		for (int i =0; i<a.length;i+=2){
+			if (a[i]==x && a[i+1]==y){
+				return population.get(i/2).toString();
+			}
+		}
+		
+		
+		return null;
+		
+		
+	}
 	
 	/* Returns a random integer */
 	private static java.util.Random rand = new java.util.Random();
@@ -97,6 +140,8 @@ public abstract class Critter {
 		if (!this.hasMoved) { move(direction, 2); }
 		this.hasMoved = true;
 	}
+	
+
 	
 	/**
 	 * Moves in given direction
@@ -349,7 +394,15 @@ public abstract class Critter {
 	 * Move the world forward in time
 	 */
 	public static void worldTimeStep() {
+		a = new int [population.size()*2];
+		int z =0;
+		for (int i =0; i< population.size();i++){
+			a[z] =population.get(i).x_coord;
+			z+=1;
+			a[z] =population.get(i).y_coord;
+			z+=1;
 		
+		}
 		/* Every critter takes a step */
 		for (Critter ls : population) { ls.doTimeStep(); }
 		
