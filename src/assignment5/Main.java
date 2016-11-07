@@ -112,8 +112,8 @@ public class Main extends Application {
 		world.add(circle, 0, 0);
 		world.add(square, 1, 0);
 		world.add(triangle, 2, 0);
-		//world.add(diamond, 3, 0);
-		//world.add(star, 4, 0);
+		world.add(diamond, 3, 0);
+		world.add(star, 4, 0);
         
         /* Button setup */
         makeButton.setText("Make");
@@ -305,6 +305,7 @@ public class Main extends Application {
 		scene.widthProperty().addListener(new ChangeListener<Number>() {
 		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
 		        winWidth = newSceneWidth.doubleValue();
+		        shapeConfig();
 		    }
 		});
 		scene.heightProperty().addListener(new ChangeListener<Number>() {
@@ -316,38 +317,41 @@ public class Main extends Application {
 	}
 	
 	public static void shapeConfig() {
-		double factor1 = (winHeight * 0.75) / Params.world_height;
-		double factor2 = (winWidth * 0.75) / Params.world_width;
-		double scaleFactor = (winHeight * 0.75) / Params.world_height;
-		System.out.println(scaleFactor);
+		double factor1 = (winHeight * 0.6) / Params.world_height;
+		double factor2 = (winWidth * 0.6) / Params.world_width;
+		double scaleFactor = 0;
+		if (factor1 < factor2) { scaleFactor = factor1; }
+		else { scaleFactor = factor2; }
 		circle.setRadius(scaleFactor / 2.0);
 		square.getPoints().clear();
 		square.getPoints().addAll(
 				0.0, 0.0,
-				scaleFactor / 3.0, 0.0,
-				scaleFactor / 3.0, scaleFactor / 3.0,
-				0.0, scaleFactor / 3.0);
+				scaleFactor, 0.0,
+				scaleFactor, scaleFactor,
+				0.0, scaleFactor);
 		triangle.getPoints().clear();
 		triangle.getPoints().addAll(
-				scaleFactor / 6.0, 0.0,
-				0.0, scaleFactor / 3.0,
-				scaleFactor / 3.0, scaleFactor / 3.0);
+				scaleFactor / 2.0, 0.0,
+				0.0, scaleFactor,
+				scaleFactor, scaleFactor);
+		diamond.getPoints().clear();
 		diamond.getPoints().addAll(
-				6.0, 0.0,
-				12.0, 6.0,
-				6.0, 12.0,
-				0.0, 6.0);
+				scaleFactor / 2.0, 0.0,
+				scaleFactor, scaleFactor / 2.0,
+				scaleFactor / 2.0, scaleFactor,
+				0.0, scaleFactor / 2.0);
+		star.getPoints().clear();
 		star.getPoints().addAll(
-				6.0, 0.0,
-				7.5, 3.0,
-				12.0, 3.0,
-				9.0, 6.0,
-				10.0, 10.0,
-				6.0, 7.5,
-				2.0, 10.0,
-				3.0, 6.0,
-				0.0, 3.0,
-				4.5, 3.0);
+				scaleFactor / 2.0, 0.0,
+				scaleFactor / 1.6, scaleFactor / 4.0,
+				scaleFactor, scaleFactor / 4.0,
+				scaleFactor / 1.33, scaleFactor / 2.0,
+				scaleFactor / 1.2, scaleFactor / 1.2,
+				scaleFactor / 2.0, scaleFactor / 1.6,
+				scaleFactor / 6.0, scaleFactor / 1.2,
+				scaleFactor / 4.0, scaleFactor / 2.0,
+				0.0, scaleFactor / 4.0,
+				scaleFactor / 2.67, scaleFactor / 4.0);
 	}
 	
 	private  ArrayList<String> listOfCritters ()throws URISyntaxException, ClassNotFoundException{
