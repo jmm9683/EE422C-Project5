@@ -33,6 +33,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+
+import java.io.File;
+import java.lang.reflect.Modifier;
+import java.net.URISyntaxException;
 import java.util.*;
 
 
@@ -95,4 +99,23 @@ public class Main extends Application {
 		launch(args);
 		Input.takeInput(new Scanner(System.in));
 	}
+	
+	private static ArrayList<String> listOfCritters ()throws URISyntaxException, ClassNotFoundException{
+		ArrayList <String>allcrits = new ArrayList<String>();
+		File directory =new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+		String pkg = Main.class.getPackage().toString().split(" ")[1];
+		directory=new File(directory.getAbsolutePath()+"/"+pkg);
+		String [] lfile = directory.list();
+		for (int i =0; i<lfile.length;i++){
+			if((Class.forName(pkg+".Critter").isAssignableFrom(Class.forName(pkg+"."+lfile[i].substring(0, lfile[i].length()-6))))
+		      &&!(Modifier.isAbstract(Class.forName(pkg+"."+lfile[i].substring(0, lfile[i].length()-6)).getModifiers()))){
+			
+		allcrits.add(lfile[i].substring(0, lfile[i].length()-6));
+			}
+		
+		
+
+		}
+		return allcrits;
+}
 }
