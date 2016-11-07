@@ -36,6 +36,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -54,21 +55,68 @@ import java.util.*;
  * May not use 'test' argument without specifying input file.
  */
 public class Main extends Application {
-	final GridPane scene = new GridPane();
-	final GridPane world = new GridPane();
-	final VBox controls = new VBox(10);
-	final Label makeAmtLabel = new Label("Number of Critters");
-	final Label multiplierLabel = new Label("Multiplier");
-	final GridPane makeAmtPane = new GridPane();
-	final Slider makeAmtSlider = new Slider(0, 100, 1);
-	final Slider makeAmtMult = new Slider(0, 10, 1);
-	final Label makeAmtVal = new Label(Integer.toString((int) makeAmtSlider.getValue()));
-	final Button makeButton = new Button();
+	static GridPane world = new GridPane();
+	static GridPane scene = new GridPane();
+	static VBox controls = new VBox(10);
+	static Label makeAmtLabel = new Label("Number of Critters");
+	static Label multiplierLabel = new Label("Multiplier");
+	static GridPane makeAmtPane = new GridPane();
+	static Slider makeAmtSlider = new Slider(0, 100, 1);
+	static Slider makeAmtMult = new Slider(0, 10, 1);
+	static Label makeAmtVal = new Label(Integer.toString((int) makeAmtSlider.getValue()));
+	static Button makeButton = new Button();
+	static Polygon triangle = new Polygon();
 	
 	@Override
 	public void start(Stage primaryStage) throws ClassNotFoundException, URISyntaxException {
 		
-		/* Scene configuration */
+		/* Scene setup */
+		sceneConfig();
+		
+		/* World setup */
+		worldConfig();
+		triangle.getPoints().addAll(0.0, 0.0, 4.0, 2.0, 2.0, 4.0);
+		world.add(triangle, 0, 0);
+        
+        /* Make button setup */
+        makeButton.setText("Make");
+        if (makeAmtSlider.getValue() == 0 || makeAmtMult.getValue() == 0) { makeButton.setDisable(true); }
+        else { makeButton.setDisable(false); }
+        
+        /* Make amount slider setup */
+        makeAmtConfig();
+        
+	    makeAmtPane.add(makeAmtLabel, 0, 0);
+	    makeAmtPane.add(makeAmtSlider, 0, 1);
+	    makeAmtPane.add(multiplierLabel, 0, 2);
+	    makeAmtPane.add(makeAmtMult, 0, 3);
+	    makeAmtPane.add(makeAmtVal, 1, 1);
+	    makeAmtPane.add(makeButton, 1, 2);
+	    
+	    ObservableList<String> oList = FXCollections.observableArrayList(listOfCritters());
+	    final ComboBox<String> critterList = new ComboBox<String>(oList);
+	    //critterList.getSelectionModel().setSelectedIndex(0);
+        
+        /* Controls setup */
+        controls.getChildren().addAll(critterList, makeAmtPane);
+	    
+		/* Add everything to scene */
+	    scene.add(world, 0, 0);
+	    scene.add(controls, 1, 0);
+		
+        primaryStage.setScene(new Scene(scene, 800, 600));
+	    primaryStage.show();
+        
+	}
+	
+	
+
+	public static void main(String[] args) {
+		launch(args);
+		//Input.takeInput(new Scanner(System.in));
+	}
+	
+	public static void sceneConfig() {
 		scene.setHgap(10);
 		scene.setVgap(10);
 		scene.setPadding(new Insets(10, 10, 10 ,10));
@@ -90,8 +138,10 @@ public class Main extends Application {
 	    sceneRow2.setPercentHeight(25);
 	    sceneRow2.setValignment(VPos.CENTER);
 	    scene.getRowConstraints().addAll(sceneRow1, sceneRow2);
-		
-		/* World setup */
+	}
+	
+	public static void worldConfig() {
+		world = new GridPane();
 		world.setGridLinesVisible(true);
         for (int i = 0; i < Params.world_width; i++) {
         	ColumnConstraints colConst = new ColumnConstraints();
@@ -103,11 +153,11 @@ public class Main extends Application {
         	rowConst.setPercentHeight(100.0 / Params.world_height);
         	world.getRowConstraints().add(rowConst);
         }
-        
-        /* Make button settings */
-        makeButton.setText("Make");
-        
-        /* Set make amount columns */
+	}
+	
+	public static void makeAmtConfig() {
+		
+		/* Set make amount columns */
 	    ColumnConstraints makeAmtCol1 = new ColumnConstraints();
 	    makeAmtCol1.setPercentWidth(75);
 	    makeAmtCol1.setHalignment(HPos.CENTER);
@@ -126,22 +176,8 @@ public class Main extends Application {
 	    RowConstraints makeAmtRow4 = new RowConstraints();
 	    makeAmtRow4.setPercentHeight(50);
 	    makeAmtPane.getRowConstraints().addAll(makeAmtRow1, makeAmtRow2, makeAmtRow3, makeAmtRow4);
-        
-	    makeAmtPane.add(makeAmtLabel, 0, 0);
-	    makeAmtPane.add(makeAmtSlider, 0, 1);
-	    makeAmtPane.add(multiplierLabel, 0, 2);
-	    makeAmtPane.add(makeAmtMult, 0, 3);
-	    makeAmtPane.add(makeAmtVal, 1, 1);
-	    makeAmtPane.add(makeButton, 1, 2);
-	    
-	    ObservableList<String> oList = FXCollections.observableArrayList(listOfCritters());
-	    final ComboBox<String> critterList = new ComboBox<String>(oList);
-	    //critterList.getSelectionModel().setSelectedIndex(0);
-        
-        /* Controls setup */
-        controls.getChildren().addAll(critterList, makeAmtPane);
-        
-        /* Make amount slider setup */
+		
+		/* Make amount slider setup */
 		makeAmtSlider.setShowTickMarks(true);
 		makeAmtSlider.setShowTickLabels(true);
 		makeAmtSlider.setMajorTickUnit(25);
@@ -162,22 +198,6 @@ public class Main extends Application {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
                 makeAmtVal.setText(String.valueOf((int)((int) makeAmtSlider.getValue() * new_val.intValue()))); }
         });
-	    
-		/* Add everything to scene */
-	    scene.add(world, 0, 0);
-	    scene.add(controls, 1, 0);
-		
-        primaryStage.setScene(new Scene(scene, 800, 600));
-	    primaryStage.show();
-        
-       
-	}
-	
-	
-
-	public static void main(String[] args) {
-		launch(args);
-		Input.takeInput(new Scanner(System.in));
 	}
 	
 	private  ArrayList<String> listOfCritters ()throws URISyntaxException, ClassNotFoundException{
