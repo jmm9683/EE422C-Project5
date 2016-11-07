@@ -36,6 +36,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.control.Button;
@@ -316,15 +317,20 @@ public class Main extends Application {
 		try {
 			List<Critter> chkpop = Critter.getInstances(a);
 			for (Critter ls : chkpop){
-				Polygon poly = new Polygon();
+				
 				int oldx =ls.getX();
 				int oldy = ls.getY();
-				poly.setFill  (ls.viewFillColor());
-				poly.setStroke(ls.viewOutlineColor());
+				
 				CritterShape b = ls.viewShape();
-				if(b==CritterShape.CIRCLE){
-				poly.getPoints().addAll(circle.getPoints());
+				if(b ==CritterShape.CIRCLE){
+					Circle circ = new Circle();
+					circ.setRadius(circle.getRadius());
 				}
+				
+				else{
+					Polygon poly = new Polygon();
+					poly.setFill  (ls.viewFillColor());
+					poly.setStroke(ls.viewOutlineColor());
 				if(b==CritterShape.SQUARE){
 					poly.getPoints().addAll(square.getPoints());
 					}
@@ -342,8 +348,10 @@ public class Main extends Application {
 				}
 				
 				scene.add(poly, oldx, oldy);
+				}
 				
-				
+				// Circle circ = new Circle();
+				//circ.set..a.. setRadius (circle)
 				
 			}
 		} catch (InvalidCritterException e) {
