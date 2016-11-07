@@ -65,7 +65,10 @@ public class Main extends Application {
 	static Slider makeAmtMult = new Slider(0, 10, 1);
 	static Label makeAmtVal = new Label(Integer.toString((int) makeAmtSlider.getValue()));
 	static Button makeButton = new Button();
+	
+	/* Shapes */
 	static Polygon triangle = new Polygon();
+	static Polygon square = new Polygon();
 	
 	@Override
 	public void start(Stage primaryStage) throws ClassNotFoundException, URISyntaxException {
@@ -73,10 +76,14 @@ public class Main extends Application {
 		/* Scene setup */
 		sceneConfig();
 		
+		/* Initialize shapes */
+		shapeConfig();
+		
 		/* World setup */
 		worldConfig();
-		triangle.getPoints().addAll(0.0, 0.0, 4.0, 2.0, 2.0, 4.0);
-		world.add(triangle, 0, 0);
+		
+		world.add(triangle, 5, 0);
+		world.add(square, 0, 0);
         
         /* Make button setup */
         makeButton.setText("Make");
@@ -141,16 +148,18 @@ public class Main extends Application {
 	}
 	
 	public static void worldConfig() {
-		world = new GridPane();
+		world.getChildren().clear();
 		world.setGridLinesVisible(true);
         for (int i = 0; i < Params.world_width; i++) {
         	ColumnConstraints colConst = new ColumnConstraints();
         	colConst.setPercentWidth(100.0 / Params.world_width);
+        	colConst.setHalignment(HPos.CENTER);
         	world.getColumnConstraints().add(colConst);
         }
         for (int i = 0; i < Params.world_height; i++) {
         	RowConstraints rowConst = new RowConstraints();
         	rowConst.setPercentHeight(100.0 / Params.world_height);
+        	rowConst.setValignment(VPos.CENTER);
         	world.getRowConstraints().add(rowConst);
         }
 	}
@@ -198,6 +207,11 @@ public class Main extends Application {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
                 makeAmtVal.setText(String.valueOf((int)((int) makeAmtSlider.getValue() * new_val.intValue()))); }
         });
+	}
+	
+	public static void shapeConfig() {
+		triangle.getPoints().addAll(5.0, 0.0, 1.0, 5.0, 9.0, 5.0);
+		square.getPoints().addAll(0.0, 0.0, 5.0, 0.0, 5.0, 5.0, 0.0, 5.0);
 	}
 	
 	private  ArrayList<String> listOfCritters ()throws URISyntaxException, ClassNotFoundException{
