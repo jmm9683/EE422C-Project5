@@ -51,6 +51,16 @@ public abstract class Critter {
 	
 	public abstract CritterShape viewShape(); 
 	
+	public int getX(){
+		return this.x_coord;
+		
+	}
+	
+	public int getY(){
+		return this.y_coord;
+		
+	}
+	
 	private static String myPackage;
 	private	static List<Critter> population = new java.util.ArrayList<Critter>();
 	private static List<Critter> babies = new java.util.ArrayList<Critter>();
