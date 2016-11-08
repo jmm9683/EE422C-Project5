@@ -248,6 +248,7 @@ public class Main extends Application {
         	
         	
         }
+       static AnimateTimer aTimer =new AnimateTimer(0);
         
         aniButton.setOnAction(new EventHandler<ActionEvent>() {
 		    @Override public void handle(ActionEvent e) {
@@ -257,7 +258,7 @@ public class Main extends Application {
 		    			
 		    			int timeSteps =(int) aniSlider.getValue();
 		    			anibool=true;
-		    			AnimateTimer aTimer = new AnimateTimer(timeSteps);
+		    			aTimer = new AnimateTimer(timeSteps);
 		    			aTimer.start();
 		    			 makeAmtSlider.setDisable(true);
 		    			 makeAmtMult.setDisable(true);
@@ -300,12 +301,12 @@ public class Main extends Application {
 		   
 		         
 		     
-		         }
+		         
 		    catch(Exception e1){
     			
     		}
 		         
-		    });
+		    }});
         
 
         statsContainer.setAlignment(Pos.CENTER);
