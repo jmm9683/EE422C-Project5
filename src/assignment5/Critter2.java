@@ -13,8 +13,6 @@
 
 package assignment5;
 
-import assignment5.Critter.CritterShape;
-
 /**
  * Critter1 is a type of critter that only moves in the west directions 
  * It  fights 66% of the time

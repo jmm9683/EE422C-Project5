@@ -11,13 +11,12 @@
  * Fall 2016
  */
 
-package assignment5; // cannot be in default package
+package assignment5;
 
 import javafx.animation.AnimationTimer;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -29,32 +28,23 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.stage.Stage;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
-import javafx.scene.text.TextAlignment;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -73,15 +63,13 @@ public class Main extends Application {
 	private static String myPackage;
 	static { myPackage = Critter.class.getPackage().toString().split(" ")[1]; }
 	
-	Timeline timeline = new Timeline ();
-	static boolean anibool =false;
-	
 	/* Overall UI tools */
 	static GridPane scene = new GridPane();
 	static GridPane world = new GridPane();
 	static VBox controls = new VBox(10);
 	static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     static ComboBox<String> critterList = new ComboBox<String>();
+	Timeline timeline = new Timeline ();
 	
 	/* Make pane */
 	static Label makeAmtLabel = new Label("Number of Critters");
@@ -103,13 +91,28 @@ public class Main extends Application {
 	static Button stepButton = new Button("Step");
 	
 	/* Animate pane */
+	static class AnimateTimer extends AnimationTimer{
+    	private int timesteps;
+    	AnimateTimer(int timesteps){ this.timesteps = timesteps; }
+    	@Override public void handle(long now){
+    		for (int i = 0; i < timesteps; i++){ Critter.worldTimeStep(); }
+    		updateCanvas();
+    	}
+    }
 	static Label aniLabel = new Label("Animate Speed");
 	static GridPane aniPane = new GridPane();
 	static Slider aniSlider = new Slider(0, 100, 1);
 	static Label aniVal = new Label(Integer.toString((int) aniSlider.getValue()));
-	static ToggleButton aniButton = new ToggleButton("Animate");
+	static Button aniButton = new Button("Animate");
+	static boolean anibool = false;
+	static AnimateTimer aTimer = new AnimateTimer((int) aniSlider.getValue());
 	
 	/* Run statistics */
+    static class Console extends OutputStream {
+        private TextArea output;
+        public Console(TextArea ta) { this.output = ta; }
+        @Override public void write(int i) throws IOException { output.appendText(String.valueOf((char) i)); }
+    }
 	static VBox statsContainer = new VBox();
 	static Button statsButton = new Button("Run Stats");
 	static TextArea stats = new TextArea();
@@ -120,16 +123,8 @@ public class Main extends Application {
 	static GridPane seedPane = new GridPane();
 	static Button seedButton = new Button("Set Seed");
 	static TextField seed = new TextField() {
-		@Override public void replaceText(int start, int end, String text) {
-	        if (text.matches("[0-9]*")) {
-	        	super.replaceText(start, end, text);
-	        }
-	    }
-	    @Override public void replaceSelection(String text) {
-	        if (text.matches("[0-9]*")) {
-	        	super.replaceSelection(text);
-	        }
-	    }
+		@Override public void replaceText(int start, int end, String text) { if (text.matches("[0-9]*")) { super.replaceText(start, end, text); } }
+	    @Override public void replaceSelection(String text) { if (text.matches("[0-9]*")) { super.replaceSelection(text); } }
 	};
 	
 	/* Exit */
@@ -149,21 +144,9 @@ public class Main extends Application {
 	static boolean chkcombo = false;
    
 	
-	@Override
-	public void start(Stage primaryStage) throws ClassNotFoundException, URISyntaxException {
+	@Override public void start(Stage primaryStage) throws ClassNotFoundException, URISyntaxException {
 		
-		/* Scene setup */
-		sceneConfig();
-		
-		/* Initialize shapes */
-		shapeConfig();
-		
-		/* World setup */
-		worldConfig();
-		
-		/* Animation setup */
-		aniConfig();
-		
+
 		seedConfig();
 		
 		/* Listen for screen resize */
@@ -339,19 +322,12 @@ public class Main extends Application {
 		    	stats();
 	    	}
         });
+
+		/* Initialization */
+		runInit();
+
         
-        exitBox.setAlignment(Pos.CENTER);
-        exitBox.setPadding(new Insets(20, 0, 0, 0));
-        exitBox.getChildren().add(exitButton);
-        
-        exitButton.setOnAction(new EventHandler<ActionEvent>() {
-		    @Override
-		    public void handle(ActionEvent e) {
-		    	Platform.exit();
-	    	}
-        });
-        
-        /* Controls setup */
+        /* Add controls to pane */
         controls.getChildren().addAll(critterList, makeAmtPane, stepPane, statsContainer, seedPane, exitBox);
 	    
 		/* Add everything to scene */
@@ -359,24 +335,46 @@ public class Main extends Application {
 	    scene.add(controls, 1, 0);
 		scene.add(aniPane, 0, 1);
 	    
+		/* Set stage */
         primaryStage.setScene(new Scene(scene, screenSize.getWidth(), screenSize.getHeight()));
 	    primaryStage.show();
-	    
-	    
-	    
-        
 	}
-	
-	
 
 	public static void main(String[] args) {
 		launch(args);
-		//Input.takeInput(new Scanner(System.in));
 	}
 	
-	public static void sceneConfig() {
+	/**
+	 * Initialize everything
+	 * @throws URISyntaxException 
+	 * @throws ClassNotFoundException 
+	 */
+	private static void runInit() throws ClassNotFoundException, URISyntaxException {
+		
+		/* Basic setup */
+		sceneConfig();
+		shapeConfig();
+		worldConfig();
+		comboConfig();
+		aniConfig();
+		statsConfig();
+		seedConfig();
+        makeAmtConfig();
+        stepConfig();
+        exitConfig();
+        
+        /* Initialize handlers */
+        handlerInit();
+		
+		/* Listen for screen resize */
+		screenListener();
+	}
+	
+	/**
+	 * Configure entire scene
+	 */
+	private static void sceneConfig() {
 		scene.setHgap(10);
-		scene.setVgap(0);
 		scene.setPadding(new Insets(10, 10, 10 ,10));
 		
 		/* Set scene columns */
@@ -398,7 +396,10 @@ public class Main extends Application {
 	    scene.getRowConstraints().addAll(sceneRow1, sceneRow2);
 	}
 	
-	public static void worldConfig() {
+	/**
+	 * Configure world
+	 */
+	private static void worldConfig() {
 		world.setGridLinesVisible(true);
         for (int i = 0; i < Params.world_width; i++) {
         	ColumnConstraints colConst = new ColumnConstraints();
@@ -414,13 +415,30 @@ public class Main extends Application {
         }
 	}
 	
-	public static void worldClear() {
+	/**
+	 * Clear current world
+	 */
+	private static void worldClear() {
 		Node node = world.getChildren().get(0);
 		world.getChildren().clear();
 		world.getChildren().add(0,node);
 	}
 	
-	public static void makeAmtConfig() {
+	/**
+	 * Configure combo box
+	 * @throws ClassNotFoundException
+	 * @throws URISyntaxException
+	 */
+	private static void comboConfig() throws ClassNotFoundException, URISyntaxException {
+        ObservableList<String> oList = FXCollections.observableArrayList(listOfCritters());
+        critterList = new ComboBox<String>(oList);
+        critterList.setPromptText("Select Critter");
+	}
+	
+	/**
+	 * Configure make amount pane
+	 */
+	private static void makeAmtConfig() {
 		
 		/* Set make amount columns */
 	    ColumnConstraints makeAmtCol1 = new ColumnConstraints();
@@ -441,14 +459,12 @@ public class Main extends Application {
 	    RowConstraints makeAmtRow4 = new RowConstraints();
 	    makeAmtRow4.setPercentHeight(50);
 	    makeAmtPane.getRowConstraints().addAll(makeAmtRow1, makeAmtRow2, makeAmtRow3, makeAmtRow4);
-		
-	    /* Initialize to disabled */
-	    makeButton.setDisable(true);
 	    
 		/* Make amount slider setup */
 		makeAmtSlider.setShowTickMarks(true);
 		makeAmtSlider.setShowTickLabels(true);
 		makeAmtSlider.setMajorTickUnit(25);
+		makeAmtSlider.setMinorTickCount(4);
 		makeAmtSlider.setPrefWidth(1000);
 		makeAmtSlider.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
@@ -463,6 +479,7 @@ public class Main extends Application {
 		makeAmtMult.setShowTickLabels(true);
 		makeAmtMult.setSnapToTicks(true);
 		makeAmtMult.setMajorTickUnit(5);
+		makeAmtMult.setMinorTickCount(4);
 		makeAmtMult.setPrefWidth(1000);
 		makeAmtMult.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
@@ -470,7 +487,8 @@ public class Main extends Application {
             	else { makeButton.setDisable(false); }
                 makeAmtVal.setText(String.valueOf((int)((int) makeAmtSlider.getValue() * new_val.intValue()))); }
         });
-        
+
+		/* Add everything to pane */
 	    makeAmtPane.add(makeAmtLabel, 0, 0);
 	    makeAmtPane.add(makeAmtSlider, 0, 1);
 	    makeAmtPane.add(makeMultLabel, 0, 2);
@@ -479,10 +497,12 @@ public class Main extends Application {
 	    makeAmtPane.add(makeButton, 1, 2);
 	}
 	
-	public static void stepConfig() {
-		/*Initial disable*/
-		stepButton.setDisable(true);
-		/* Set make amount columns */
+	/**
+	 * Configure step pane
+	 */
+	private static void stepConfig() {
+		
+		/* Set step columns */
 	    ColumnConstraints stepCol1 = new ColumnConstraints();
 	    stepCol1.setPercentWidth(75);
 	    stepCol1.setHalignment(HPos.CENTER);
@@ -491,7 +511,7 @@ public class Main extends Application {
 	    stepCol2.setHalignment(HPos.CENTER);
 	    stepPane.getColumnConstraints().addAll(stepCol1, stepCol2);
 	    
-	    /* Set make amount rows */
+	    /* Set step rows */
 	    RowConstraints stepRow1 = new RowConstraints();
 	    stepRow1.setPercentHeight(50);
 	    RowConstraints stepRow2 = new RowConstraints();
@@ -502,32 +522,35 @@ public class Main extends Application {
 	    stepRow4.setPercentHeight(50);
 	    stepPane.getRowConstraints().addAll(stepRow1, stepRow2, stepRow3, stepRow4);
 		
-		/* Make amount slider setup */
+		/* Step slider setup */
 		stepSlider.setShowTickMarks(true);
 		stepSlider.setShowTickLabels(true);
 		stepSlider.setMajorTickUnit(25);
+		stepSlider.setMinorTickCount(4);
 		stepSlider.setPrefWidth(1000);
 		stepSlider.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
             	stepSlider.setValue(new_val.intValue());
+            	if (((int) stepMult.getValue() * new_val.intValue() < 1)) { stepButton.setDisable(true); }
+            	else { stepButton.setDisable(false); }
                 stepVal.setText(String.valueOf((int)((int) stepMult.getValue() * new_val.intValue()))); }
         });
 		
-		/* Make amount multiplier setup */
+		/* Step multiplier setup */
 		stepMult.setShowTickMarks(true);
 		stepMult.setShowTickLabels(true);
 		stepMult.setSnapToTicks(true);
 		stepMult.setMajorTickUnit(5);
+		stepMult.setMinorTickCount(4);
 		stepMult.setPrefWidth(1000);
 		stepMult.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-            	if(stepSlider.getValue()*new_val.intValue()>0){
-            		stepButton.setDisable(false);
-            	}
-            	else{stepButton.setDisable(true);}
+            	if (((int) stepSlider.getValue() * new_val.intValue() < 1)) { stepButton.setDisable(true); }
+            	else { stepButton.setDisable(false); }
                 stepVal.setText(String.valueOf((int)((int) stepSlider.getValue() * new_val.intValue()))); }
         });
-		
+
+		/* Add everything to pane */
 		stepPane.add(stepLabel, 0, 0);
 		stepPane.add(stepSlider, 0, 1);
 		stepPane.add(stepMultLabel, 0, 2);
@@ -536,11 +559,12 @@ public class Main extends Application {
 		stepPane.add(stepButton, 1, 2);
 	}
 	
-	public static void aniConfig() {
-		/*Initial disable*/
-		aniButton.setDisable(false);
-		/* Set animation columns */
+	/**
+	 * Configure animate pane
+	 */
+	private static void aniConfig() {
 		
+		/* Set animation columns */
 	    ColumnConstraints aniCol1 = new ColumnConstraints();
 	    aniCol1.setPercentWidth(60);
 	    aniCol1.setHalignment(HPos.CENTER);
@@ -574,8 +598,8 @@ public class Main extends Application {
                 aniVal.setText(String.valueOf(new_val.intValue())); }
         });
 		
+		/* Add everything to pane */
 		aniPane.setPadding(new Insets(0, 0, 10, 0));
-		
 		aniPane.add(aniLabel, 0, 0);
 		aniPane.add(aniSlider, 0, 1);
 		aniPane.add(aniVal, 1, 1);
@@ -583,24 +607,129 @@ public class Main extends Application {
 		
 	}
 	
-	public static void screenListener() {
+	/**
+	 * Configure statistics
+	 */
+	private static void statsConfig() {
+        statsContainer.setAlignment(Pos.CENTER);
+        statsContainer.setSpacing(10);
+        statsContainer.setPadding(new Insets(20, 0, 0, 0));
+        statsContainer.getChildren().addAll(statsButton, stats);
+	}
+	
+	/**
+	 * Configure exit button
+	 */
+	private static void exitConfig() {
+        exitBox.setAlignment(Pos.CENTER);
+        exitBox.setPadding(new Insets(20, 0, 0, 0));
+        exitBox.getChildren().add(exitButton);
+        exitButton.setOnAction(new EventHandler<ActionEvent>() { @Override public void handle(ActionEvent e) { Platform.exit(); } });
+	}
+	
+	/**
+	 * Initialize handlers
+	 */
+	private static void handlerInit() {
+		
+		/* Combo box handler */
+        critterList.setOnAction(new EventHandler<ActionEvent>() { @Override public void handle(ActionEvent e) { chkcombo = true; } });
+        
+        /* Make button handler */
+        makeButton.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override public void handle(ActionEvent e) {
+				int nocritters =(int) ((int) makeAmtSlider.getValue() * makeAmtMult.getValue());
+				for (int i =0; i<nocritters;i++) { try { Critter.makeCritter(critterList.getValue()); } catch (Exception e1) { } }
+				updateCanvas();
+			}
+        });
+
+        /* Step button handler */
+        stepButton.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override public void handle(ActionEvent e) {
+		         int nsteps = (int) (stepSlider.getValue()*stepMult.getValue());
+		         for (int j = 0 ;j < nsteps; j++){ Critter.worldTimeStep(); }
+		         updateCanvas();
+	        }
+	    });
+
+        /* Animate button handler */
+        aniButton.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override public void handle(ActionEvent e) {
+		    	try {
+		    		aTimer.timesteps = (int) aniSlider.getValue();
+		    		anibool = !anibool;
+	    			if (anibool) {
+	    				aniButton.setText("Stop");
+		    			aTimer.start();
+		    			makeAmtSlider.setDisable(true);
+		    			makeAmtMult.setDisable(true);
+		    		    makeButton.setDisable(true);
+		    		    stepSlider.setDisable(true);
+		    		    stepMult.setDisable(true);
+		    		    stepButton.setDisable(true);
+		    		    aniSlider.setDisable(true);
+		    		    statsButton.setDisable(true);
+		    		    seedButton.setDisable(true);
+		    		    seed.setDisable(true);
+		    		    exitButton.setDisable(true);	
+		    		}
+			    	else {
+			    		aniButton.setText("Animate");
+					    aTimer.stop();
+					    makeAmtSlider.setDisable(false);
+			    		makeAmtMult.setDisable(false);
+			    		makeButton.setDisable(false);
+			    		stepSlider.setDisable(false);
+			    		stepMult.setDisable(false);
+			    		stepButton.setDisable(false);
+			    	    aniSlider.setDisable(false);
+			    		statsButton.setDisable(false);
+			    		seedButton.setDisable(false);
+			    		seed.setDisable(false);
+			    		exitButton.setDisable(false);
+		    		}
+    			} catch(Exception e1) { }
+	    	}
+	    });
+        
+        /* Statistics button handler */
+        statsButton.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override public void handle(ActionEvent e) {
+		    	stats.clear();
+		    	Console console = new Console(stats);
+		        PrintStream ps = new PrintStream(console);
+		        System.setOut(ps);
+		        System.setErr(ps);
+		    	stats();
+	    	}
+        });
+	}
+	
+	/**
+	 * Listen for changes in screen size
+	 */
+	private static void screenListener() {
 		scene.widthProperty().addListener(new ChangeListener<Number>() {
 		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
 		        winWidth = newSceneWidth.doubleValue();
 		        shapeConfig();
-		        updatecanvas();
+		        updateCanvas();
 		    }
 		});
 		scene.heightProperty().addListener(new ChangeListener<Number>() {
 		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
 		        winHeight = newSceneHeight.doubleValue();
 		        shapeConfig();
-		        updatecanvas();
+		        updateCanvas();
 		    }
 		});
 	}
 	
-	public static void shapeConfig() {
+	/**
+	 * Configure basic shapes
+	 */
+	private static void shapeConfig() {
 		double factor1 = (winHeight * 0.6) / Params.world_height;
 		double factor2 = (winWidth * 0.3) / Params.world_width;
 		double scaleFactor = 0;
@@ -638,6 +767,9 @@ public class Main extends Application {
 				scaleFactor / 2.67, scaleFactor / 4.0);
 	}
 	
+	/**
+	 * Configure seed pane
+	 */
 	private static void seedConfig() {
 		
 		/* Set seed columns */
@@ -658,51 +790,58 @@ public class Main extends Application {
 	    seedRow2.setValignment(VPos.CENTER);
 	    seedPane.getRowConstraints().addAll(seedRow1, seedRow2);
 	    
+	    /* Seed button listener */
 	    seedButton.setOnAction(new EventHandler<ActionEvent>() {
-		    @Override
-		    public void handle(ActionEvent e) {
+		    @Override public void handle(ActionEvent e) {
 				try { Critter.setSeed(Long.parseLong(seed.getText())); }
 				catch (NumberFormatException e1) { System.out.println("Not a number"); } 
 		    }
 	    });
-	    
+
+		/* Add everything to pane */
 	    seedPane.setAlignment(Pos.CENTER);
-		
 		seedPane.add(seedLabel, 0, 0);
 		seedPane.add(seed, 0, 1);
 		seedPane.add(seedButton, 1, 1);
 	}
 	
-	private  ArrayList<String> listOfCritters ()throws URISyntaxException, ClassNotFoundException{
-		ArrayList <String>allcrits = new ArrayList<String>();
-		File directory =new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+	private static ArrayList<String> listOfCritters() throws URISyntaxException, ClassNotFoundException {
+		ArrayList<String> allcrits = new ArrayList<String>();
+		File directory = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI());
 		String pkg = Main.class.getPackage().toString().split(" ")[1];
-		directory=new File(directory.getAbsolutePath()+"/"+pkg);
+		directory = new File(directory.getAbsolutePath() + "/" + pkg);
 		String [] lfile = directory.list();
-		for (int i =0; i<lfile.length;i++){
-			if((Class.forName(pkg+".Critter").isAssignableFrom(Class.forName(pkg+"."+lfile[i].substring(0, lfile[i].length()-6))))
-		      &&!(Modifier.isAbstract(Class.forName(pkg+"."+lfile[i].substring(0, lfile[i].length()-6)).getModifiers()))){
-			
-		allcrits.add(lfile[i].substring(0, lfile[i].length()-6));
+		for (int i = 0;i < lfile.length; i++) {
+			if((Class.forName(pkg + ".Critter").isAssignableFrom(Class.forName(pkg + "." + lfile[i].substring(0, lfile[i].length() - 6))))
+					&& !(Modifier.isAbstract(Class.forName(pkg + "." + lfile[i].substring(0, lfile[i].length() - 6)).getModifiers()))) {
+				allcrits.add(lfile[i].substring(0, lfile[i].length() - 6));
 			}
-		
-		
-
 		}
 		return allcrits;
-}
-	public static void updatecanvas(){
+	}
+	
+	/**
+	 * Update screen
+	 */
+	private static void updateCanvas(){
 		worldClear();
 		String a = "Crittersgetter";
 		try {
+			
+			/* Check for all critter instances */
 			List<Critter> chkpop = Critter.getInstances(a);
-			for (Critter ls : chkpop){
+			
+			for (Critter ls : chkpop) {
 				
-				int oldx =ls.getX();
+				/* Store old coordinates */
+				int oldx = ls.getX();
 				int oldy = ls.getY();
 				
+				/* Check critter shape */
 				CritterShape b = ls.viewShape();
-				if(b ==CritterShape.CIRCLE){
+				
+				/* Critter is circle */
+				if (b == CritterShape.CIRCLE) {
 					Circle circ = new Circle();
 					circ.setRadius(circle.getRadius());
 					circ.setFill(ls.viewFillColor());
@@ -710,66 +849,37 @@ public class Main extends Application {
 					world.add(circ, oldx, oldy);
 				}
 				
+				/* Critter is a polygon */
 				else{
 					Polygon poly = new Polygon();
 					poly.setFill  (ls.viewFillColor());
 					poly.setStroke(ls.viewOutlineColor());
-				if(b==CritterShape.SQUARE){
-					poly.getPoints().addAll(square.getPoints());
-					}
-				
-				if(b==CritterShape.DIAMOND){
-					poly.getPoints().addAll(diamond.getPoints());
-					}
-				
-				if(b==CritterShape.STAR){
-					poly.getPoints().addAll(star.getPoints());
-					}
-				
-				if(b== CritterShape.TRIANGLE){
-					poly.getPoints().addAll(triangle.getPoints());
+					
+					/* Possible critter shapes */
+					if (b == CritterShape.SQUARE) { poly.getPoints().addAll(square.getPoints()); }
+					if(b==CritterShape.DIAMOND){ poly.getPoints().addAll(diamond.getPoints()); }
+					if(b==CritterShape.STAR){ poly.getPoints().addAll(star.getPoints()); }
+					if(b== CritterShape.TRIANGLE){ poly.getPoints().addAll(triangle.getPoints()); }
+					
+					world.add(poly, oldx, oldy);
 				}
 				
-				world.add(poly, oldx, oldy);
-				}
-				
-				class Console extends OutputStream {
-
-		            private TextArea output;
-
-		            public Console(TextArea ta) {
-		                this.output = ta;
-		            }
-
-		            @Override
-		            public void write(int i) throws IOException {
-		                output.appendText(String.valueOf((char) i));
-		            }
-		        }
-				
+				/* Run statistics when canvas is updated */
 		    	stats.clear();
 		    	Console console = new Console(stats);
 		        PrintStream ps = new PrintStream(console);
 		        System.setOut(ps);
 		        System.setErr(ps);
 		    	stats();
-				
-				// Circle circ = new Circle();
-				//circ.set..a.. setRadius (circle)
-				
+		    	
 			}
 		} catch (Exception e) { }
-		
-
-		
-//		------- Button Handlers
-		
-		
-		
-	
 	}
 	
-	public static void stats() {
+	/**
+	 * Statistics runner
+	 */
+	private static void stats() {
 		try { Class.forName(myPackage + "." + critterList.getValue()).getMethod("runStats", List.class).invoke(critterList.getValue(), Critter.getInstances(critterList.getValue())); }
 		catch (Exception e) { }
 	}
