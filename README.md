@@ -222,7 +222,7 @@ These instructions will get you a copy of the project up and running on your loc
 	
 ##Graphics
 
-![GUI Diagram](atchisonbrent/EE422C-Project5/README.md)
+![GUI Diagram](https://github.com/atchisonbrent/EE422C-Project5/blob/master/Project%205%20Critters%202%20GUI.png)
 
 ##Critter Object
 
