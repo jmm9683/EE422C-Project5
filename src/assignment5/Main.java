@@ -549,7 +549,7 @@ public class Main extends Application {
 	 * Configure basic shapes
 	 */
 	private static void shapeConfig() {
-		double factor1 = (winHeight * 0.6) / Params.world_height;
+		double factor1 = (winHeight * 0.5) / Params.world_height;
 		double factor2 = (winWidth * 0.3) / Params.world_width;
 		double scaleFactor = 0;
 		if (factor1 < factor2) { scaleFactor = factor1; }
