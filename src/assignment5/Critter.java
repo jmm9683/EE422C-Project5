@@ -537,39 +537,6 @@ public abstract class Critter {
 	 * Display entire world
 	 */
 	public static void displayWorld() {
-		printEdge();
-		printMiddle();
-		printEdge();
-	}
-	
-	/**
-	 * Prints top and bottom edges of world
-	 */
-	private static void printEdge() {
-		System.out.print("+");
-		for (int i = 0; i < Params.world_width; i++) { System.out.print("-"); }
-		System.out.println("+");
-	}
-	
-	/**
-	 * Fills in middle of world
-	 */
-	private static void printMiddle() {
-		boolean found = false;
-		for (int i = 0; i < Params.world_height; i++) {
-			System.out.print("|");
-			for (int j = 0; j < Params.world_width; j++) {
-				for (int k = 0; k < population.size(); k++) {
-					if (population.get(k).x_coord == j && population.get(k).y_coord == i) {
-						System.out.print(population.get(k).toString());
-						found = true;
-						break;
-					}
-				}
-				if (!found) { System.out.print(" "); }
-				else { found = false; }
-			}
-			System.out.println("|");
-		}
+		Main.updateCanvas();
 	}
 }

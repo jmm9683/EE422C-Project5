@@ -96,7 +96,7 @@ public class Main extends Application {
     	AnimateTimer(int timesteps){ this.timesteps = timesteps; }
     	@Override public void handle(long now){
     		for (int i = 0; i < timesteps; i++){ Critter.worldTimeStep(); }
-    		updateCanvas();
+    		Critter.displayWorld();
     	}
     }
 	static Label aniLabel = new Label("Animate Speed");
@@ -462,7 +462,7 @@ public class Main extends Application {
 		    @Override public void handle(ActionEvent e) {
 				int nocritters =(int) ((int) makeAmtSlider.getValue() * makeAmtMult.getValue());
 				for (int i =0; i<nocritters;i++) { try { Critter.makeCritter(critterList.getValue()); } catch (Exception e1) { } }
-				updateCanvas();
+				Critter.displayWorld();
 			}
         });
 
@@ -471,7 +471,7 @@ public class Main extends Application {
 		    @Override public void handle(ActionEvent e) {
 		         int nsteps = (int) (stepSlider.getValue()*stepMult.getValue());
 		         for (int j = 0 ;j < nsteps; j++){ Critter.worldTimeStep(); }
-		         updateCanvas();
+		         Critter.displayWorld();
 	        }
 	    });
 
@@ -536,14 +536,14 @@ public class Main extends Application {
 		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
 		        winWidth = newSceneWidth.doubleValue();
 		        shapeConfig();
-		        updateCanvas();
+		        Critter.displayWorld();
 		    }
 		});
 		scene.heightProperty().addListener(new ChangeListener<Number>() {
 		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
 		        winHeight = newSceneHeight.doubleValue();
 		        shapeConfig();
-		        updateCanvas();
+		        Critter.displayWorld();
 		    }
 		});
 	}
@@ -645,7 +645,7 @@ public class Main extends Application {
 	/**
 	 * Update screen
 	 */
-	private static void updateCanvas(){
+	static void updateCanvas(){
 		worldClear();
 		String a = "Crittersgetter";
 		try {
