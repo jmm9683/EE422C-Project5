@@ -195,7 +195,7 @@ public class Main extends Application {
 	/**
 	 * Configure entire scene
 	 */
-	public static void sceneConfig() {
+	private static void sceneConfig() {
 		scene.setHgap(10);
 		scene.setPadding(new Insets(10, 10, 10 ,10));
 		
@@ -221,7 +221,7 @@ public class Main extends Application {
 	/**
 	 * Configure world
 	 */
-	public static void worldConfig() {
+	private static void worldConfig() {
 		world.setGridLinesVisible(true);
         for (int i = 0; i < Params.world_width; i++) {
         	ColumnConstraints colConst = new ColumnConstraints();
@@ -240,7 +240,7 @@ public class Main extends Application {
 	/**
 	 * Clear current world
 	 */
-	public static void worldClear() {
+	private static void worldClear() {
 		Node node = world.getChildren().get(0);
 		world.getChildren().clear();
 		world.getChildren().add(0,node);
@@ -260,7 +260,7 @@ public class Main extends Application {
 	/**
 	 * Configure make amount pane
 	 */
-	public static void makeAmtConfig() {
+	private static void makeAmtConfig() {
 		
 		/* Set make amount columns */
 	    ColumnConstraints makeAmtCol1 = new ColumnConstraints();
@@ -322,7 +322,7 @@ public class Main extends Application {
 	/**
 	 * Configure step pane
 	 */
-	public static void stepConfig() {
+	private static void stepConfig() {
 		
 		/* Set step columns */
 	    ColumnConstraints stepCol1 = new ColumnConstraints();
@@ -384,7 +384,7 @@ public class Main extends Application {
 	/**
 	 * Configure animate pane
 	 */
-	public static void aniConfig() {
+	private static void aniConfig() {
 		
 		/* Set animation columns */
 	    ColumnConstraints aniCol1 = new ColumnConstraints();
@@ -531,7 +531,7 @@ public class Main extends Application {
 	/**
 	 * Listen for changes in screen size
 	 */
-	public static void screenListener() {
+	private static void screenListener() {
 		scene.widthProperty().addListener(new ChangeListener<Number>() {
 		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
 		        winWidth = newSceneWidth.doubleValue();
@@ -551,7 +551,7 @@ public class Main extends Application {
 	/**
 	 * Configure basic shapes
 	 */
-	public static void shapeConfig() {
+	private static void shapeConfig() {
 		double factor1 = (winHeight * 0.6) / Params.world_height;
 		double factor2 = (winWidth * 0.3) / Params.world_width;
 		double scaleFactor = 0;
@@ -645,7 +645,7 @@ public class Main extends Application {
 	/**
 	 * Update screen
 	 */
-	public static void updateCanvas(){
+	private static void updateCanvas(){
 		worldClear();
 		String a = "Crittersgetter";
 		try {
@@ -686,12 +686,6 @@ public class Main extends Application {
 					world.add(poly, oldx, oldy);
 				}
 				
-				class Console extends OutputStream {
-		            private TextArea output;
-		            public Console(TextArea ta) { this.output = ta; }
-		            @Override public void write(int i) throws IOException { output.appendText(String.valueOf((char) i)); }
-		        }
-				
 				/* Run statistics when canvas is updated */
 		    	stats.clear();
 		    	Console console = new Console(stats);
@@ -707,7 +701,7 @@ public class Main extends Application {
 	/**
 	 * Statistics runner
 	 */
-	public static void stats() {
+	private static void stats() {
 		try { Class.forName(myPackage + "." + critterList.getValue()).getMethod("runStats", List.class).invoke(critterList.getValue(), Critter.getInstances(critterList.getValue())); }
 		catch (Exception e) { }
 	}
