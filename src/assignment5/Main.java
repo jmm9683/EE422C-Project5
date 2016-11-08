@@ -484,32 +484,12 @@ public class Main extends Application {
 	    			if (anibool) {
 	    				aniButton.setText("Stop");
 		    			aTimer.start();
-		    			makeAmtSlider.setDisable(true);
-		    			makeAmtMult.setDisable(true);
-		    		    makeButton.setDisable(true);
-		    		    stepSlider.setDisable(true);
-		    		    stepMult.setDisable(true);
-		    		    stepButton.setDisable(true);
-		    		    aniSlider.setDisable(true);
-		    		    statsButton.setDisable(true);
-		    		    seedButton.setDisable(true);
-		    		    seed.setDisable(true);
-		    		    exitButton.setDisable(true);	
+		    			togglePane();	
 		    		}
 			    	else {
 			    		aniButton.setText("Animate");
 					    aTimer.stop();
-					    makeAmtSlider.setDisable(false);
-			    		makeAmtMult.setDisable(false);
-			    		makeButton.setDisable(false);
-			    		stepSlider.setDisable(false);
-			    		stepMult.setDisable(false);
-			    		stepButton.setDisable(false);
-			    	    aniSlider.setDisable(false);
-			    		statsButton.setDisable(false);
-			    		seedButton.setDisable(false);
-			    		seed.setDisable(false);
-			    		exitButton.setDisable(false);
+					    togglePane();
 		    		}
     			} catch(Exception e1) { }
 	    	}
@@ -526,6 +506,23 @@ public class Main extends Application {
 		    	stats();
 	    	}
         });
+	}
+	
+	/**
+	 * Toggles pane enable/disable when animating
+	 */
+	private static void togglePane() {
+		makeAmtSlider.setDisable(anibool);
+		makeAmtMult.setDisable(anibool);
+	    makeButton.setDisable(anibool);
+	    stepSlider.setDisable(anibool);
+	    stepMult.setDisable(anibool);
+	    stepButton.setDisable(anibool);
+	    aniSlider.setDisable(anibool);
+	    statsButton.setDisable(anibool);
+	    seedButton.setDisable(anibool);
+	    seed.setDisable(anibool);
+	    exitButton.setDisable(anibool);
 	}
 	
 	/**
