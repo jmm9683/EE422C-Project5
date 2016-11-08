@@ -222,11 +222,24 @@ public abstract class Critter {
 			default:	break;
 		}
 		
+		
 		/* Check world wrapping */
 		if(this.x_coord < 0){ this.x_coord += Params.world_width; }
 		if(this.x_coord >= Params.world_width){ this.x_coord -= Params.world_width; }
 		if(this.y_coord < 0){ this.y_coord += Params.world_height; }
 		if(this.y_coord >= Params.world_height){ this.y_coord -= Params.world_height; }
+		int count =0;
+		for(Critter ls: population){
+			if (this.equals(ls)){
+				a[2*count]=this.x_coord;
+				a[2*count +1] =this.y_coord;
+				
+				
+			}
+			
+			count+=1;
+		}
+		
 		
 	}
 	
