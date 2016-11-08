@@ -100,14 +100,18 @@ public abstract class Critter {
 					y += nsteps;
 					break;
 		default:	break;
-	}
+	} 
 		for (int i =0; i<a.length;i+=2){
 			if (a[i]==x && a[i+1]==y){
+				if(this.fighting && (population.get(i/2).energy<=0)){
+
+					continue;
+				}
 				return population.get(i/2).toString();
 			}
 		}
 		
-		
+
 		return null;
 		
 		
