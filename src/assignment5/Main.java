@@ -631,6 +631,7 @@ public class Main extends Application {
 		directory = new File(directory.getAbsolutePath() + "/" + pkg);
 		String [] lfile = directory.list();
 		for (int i = 0;i < lfile.length; i++) {
+			if(!(lfile[i].substring(lfile[i].length() - 6, lfile[i].length()).equals(".class"))) { continue; }
 			if((Class.forName(pkg + ".Critter").isAssignableFrom(Class.forName(pkg + "." + lfile[i].substring(0, lfile[i].length() - 6))))
 					&& !(Modifier.isAbstract(Class.forName(pkg + "." + lfile[i].substring(0, lfile[i].length() - 6)).getModifiers()))) {
 				allcrits.add(lfile[i].substring(0, lfile[i].length() - 6));
